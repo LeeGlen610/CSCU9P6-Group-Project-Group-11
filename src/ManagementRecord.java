@@ -169,18 +169,21 @@ public class ManagementRecord {
   * [Special status changers are, for example, "taxiTo", where a gate number is supplied.]
   * @preconditions Valid transition requested*/
   public void setStatus(int newStatus){
+    status = newStatus;
   }
 
   /**
    * Return the status code of this MR.
    */
   public int getStatus(){
+    return status;
   }
 
   /**
    * Return the flight code of this MR.
    */
   public String getFlightCode(){
+    return flightCode;
   }
 
 /** Sets up the MR with details of newly detected flight
@@ -220,14 +223,17 @@ public class ManagementRecord {
   * For this operation to be applicable, the status must be READY_PASSENGERS, and it doesn't change.
   * @preconditions Status is READY_PASSENGERS*/
   public void addPassenger(PassengerDetails details){
+    passengerList.addPassenger(details);
   }
 
 /** Return the entire current PassengerList.*/
   public PassengerList getPassengerList(){
+    return passengerList;
   }
 
 /** Return the aircraft's Itinerary.*/
   public Itinerary getItinerary(){
+    return itinerary;
   }
 
 }
