@@ -35,6 +35,7 @@ public class GateInfoDatabase {
  * Obtain and return the status of the given gate identified by the gateNumber parameter.
  */
   public int getStatus(int gateNumber){
+	  return gates[gateNumber].getStatus();
   }
 
 /**
@@ -42,24 +43,32 @@ public class GateInfoDatabase {
  * For data collection by the GOC.
  */
   public int[] getStatuses(){
+	  int[] statuses = new int[maxGateNumber];
+	  for(int i = 0; i < maxGateNumber; i++) {
+		  statuses[i] = gates[i].getStatus();
+	  }
+	  return statuses;
   }
 
 /**
  * Forward a status change request to the given gate identified by the gateNumber parameter. Called to allocate a free gate to the aircraft identified by mCode.
  */
   public void allocate(int gateNumber, int mCode){
+	  gates[gateNumber].allocate(mCode);
   }
 
 /**
  * Forward a status change request to the given gate identified by the gateNumber parameter. Called to indicate that the expected aircraft has arrived at the gate.
  */
   public void docked(int gateNumber){
+	  gates[gateNumber].docked();
   }
 
 /**
  * Forward a status change request to the given gate identified by the gateNumber parameter. Called to indicate that the aircraft has departed and that the gate is now free.
  */
   public void departed(int gateNumber){
+	  gates[gateNumber].departed();
   }
 
 }
