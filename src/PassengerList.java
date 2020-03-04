@@ -19,8 +19,8 @@ public class PassengerList {
  * @shapeType AggregationLink
  * @supplierCardinality 0..*
  */
-  private PassengerDetails[] details;
 
+  private PassengerDetails[] details;
 /**
  * The given passenger is boarding.
  * Their details are recorded, in the passenger list.

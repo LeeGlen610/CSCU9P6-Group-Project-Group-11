@@ -15,12 +15,14 @@ public class PassengerDetails {
    * Constructor: Just a name required.
    */
   public PassengerDetails(String name){
+    this.name=name;
   }
 
   /**
    * Return the name of this passenger.
    */
   public String getName(){
+    return name;
   }
 
   /**
