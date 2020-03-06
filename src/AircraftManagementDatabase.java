@@ -54,6 +54,7 @@ public class AircraftManagementDatabase {
  * Forward a status change request to the MR given by the mCode supplied as a parameter. Parameter newStatus is the requested new status. No effect is expected if the current status is not a valid preceding status. This operation is appropriate when the status change does not need any additional information to be noted. It is present instead of a large collection of public operations for requesting specific status changes.
  */
   public void setStatus(int mCode, int newStatus){
+	  MRs[mCode].setStatus(newStatus);
   }
 
 /**
@@ -61,6 +62,7 @@ public class AircraftManagementDatabase {
  * The request is forwarded to the MR.
  */
   public String getFlightCode(int mCode){
+	  return MRs[mCode].getFlightCode();
   }
 
 /**
@@ -98,16 +100,19 @@ public class AircraftManagementDatabase {
 /**
  *  The given passenger is boarding the aircraft with the given mCode. Forward the message to the given MR for recording in the passenger list.*/
   public void addPassenger(int mCode, PassengerDetails details){
+      MRs[mCode].addPassenger(details);
   }
 
 /**
  *  Return the PassengerList of the aircraft with the given mCode.*/
   public PassengerList getPassengerList(int mCode){
+	  return MRs[mCode].getPassengerList();
   }
 
 /**
  *  Return the Itinerary of the aircraft with the given mCode.*/
   public Itinerary getItinerary(int mCode){
+	  return MRs[mCode].getItinerary();
   }
 
 }
