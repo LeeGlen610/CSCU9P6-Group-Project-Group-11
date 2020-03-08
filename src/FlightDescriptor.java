@@ -16,6 +16,21 @@ public class FlightDescriptor {
    * and the current PassengerList.
    */
   public FlightDescriptor(String flightCode, Itinerary itinerary, PassengerList list){
+    this.flightCode = flightCode;
+    this.lnkUnnamed = itinerary;
+    this.lnkUnnamed1 = list;
+  }
+
+  public PassengerList getLnkUnnamed1() {
+    return lnkUnnamed1;
+  }
+
+  public Itinerary getLnkUnnamed() {
+    return lnkUnnamed;
+  }
+
+  public String getFlightCode() {
+    return flightCode;
   }
 
   /**
