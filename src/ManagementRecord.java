@@ -191,6 +191,9 @@ public class ManagementRecord {
   * Status must be FREE now, and becomes either IN_TRANSIT or WANTING_TO_LAND depending on the details in the flight descriptor.
   * @preconditions Status is FREE*/
   public void radarDetect(FlightDescriptor fd){
+    if (status == 0){
+
+    }
   }
 
 /** This aircraft has departed from local airspace.
@@ -198,6 +201,14 @@ public class ManagementRecord {
   * Status must have been either IN_TRANSIT or DEPARTING_THROUGH_LOCAL_AIRSPACE, and becomes FREE (and the flight details are cleared).
   * @preconditions Status is IN_TRANSIT or DEPARTING_THROUGH_LOCAL_AIRSPACE*/
   public void radarLostContact(){
+    if (status == 1 || status == 18){
+      status = 0;
+      flightCode = "";
+      passengerList = null;
+      faultDescription = "";
+      itinerary = null;
+      gateNumber = 0;
+    }
   }
 
 /** GOC has allocated the given gate for unloading passengers.
@@ -205,6 +216,10 @@ public class ManagementRecord {
   * The gate number is recorded.The status must have been LANDED and becomes TAXIING.
   * @preconditions Status is LANDED*/
   public void taxiTo(int gateNumber){
+    if (status == 5) {
+      status = 6;
+      this.gateNumber = gateNumber;
+    }
   }
 
 /** The Maintenance Supervisor has reported faults.
@@ -214,6 +229,13 @@ public class ManagementRecord {
   * The status must have been READY_FOR_CLEAN_MAINT or CLEAN_AWAIT_MAINT and becomes FAULTY_AWAIT_CLEAN or AWAIT_REPAIR respectively.
   * @preconditions Status is READY_FOR_CLEAN_MAINT or CLEAN_AWAIT_MAINT*/
   public void faultsFound(String description){
+    if (status == 8){
+      status = 9;
+      this.faultDescription = description;
+    } else if (status == 10){
+      status = 12;
+      this.faultDescription = description;
+    }
   }
 
 /** The given passenger is boarding this aircraft.
