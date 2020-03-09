@@ -23,4 +23,6 @@ public class CleaningSupervisor {
   * @directed*/
   private AircraftManagementDatabase lnkUnnamed;
 
+  public CleaningSupervisor(AircraftManagementDatabase aircraftManagementDatabase) {
+  }
 }

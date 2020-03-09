@@ -19,6 +19,17 @@ public class Main {
 public static void main(String[] args) {
     // Instantiate databases
     // Instantiate and show all interfaces as Frames
+  AircraftManagementDatabase aircraftManagementDatabase = new AircraftManagementDatabase(); //database
+  GateInfoDatabase gateInfoDatabase = new GateInfoDatabase();
+  GOC c1 = new GOC(aircraftManagementDatabase, gateInfoDatabase);
+  LATC c2 =new LATC(aircraftManagementDatabase);
+  MaintenanceInspector c3 = new MaintenanceInspector(aircraftManagementDatabase);
+  RefuellingSupervisor c4 = new RefuellingSupervisor(aircraftManagementDatabase);
+  CleaningSupervisor c5 = new CleaningSupervisor(aircraftManagementDatabase);
+  GateConsole c6 = new GateConsole(aircraftManagementDatabase,gateInfoDatabase);
+  RadarTransceiver c7 = new RadarTransceiver (aircraftManagementDatabase);
+
+
   }
 
 }

@@ -24,4 +24,6 @@ public class MaintenanceInspector {
   * @directed*/
   private AircraftManagementDatabase lnkUnnamed;
 
+  public MaintenanceInspector(AircraftManagementDatabase aircraftManagementDatabase) {
+  }
 }

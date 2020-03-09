@@ -24,4 +24,6 @@ public class LATC {
   * @directed*/
   private AircraftManagementDatabase lnkUnnamed;
 
+    public LATC(AircraftManagementDatabase aircraftManagementDatabase) {
+    }
 }

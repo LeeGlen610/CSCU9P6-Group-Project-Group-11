@@ -38,4 +38,6 @@ public class GateConsole {
  */
   private int gateNumber;
 
+  public GateConsole(AircraftManagementDatabase aircraftManagementDatabase, GateInfoDatabase gateInfoDatabase) {
+  }
 }

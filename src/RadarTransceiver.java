@@ -27,4 +27,6 @@ public class RadarTransceiver {
   * @directed*/
   private AircraftManagementDatabase lnkUnnamed;
 
+  public RadarTransceiver(AircraftManagementDatabase aircraftManagementDatabase) {
+  }
 }

@@ -32,4 +32,6 @@ public class GOC {
   * @directed*/
   private AircraftManagementDatabase lnkUnnamed1;
 
+  public GOC(AircraftManagementDatabase aircraftManagementDatabase, GateInfoDatabase gateInfoDatabase) {
+  }
 }

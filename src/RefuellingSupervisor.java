@@ -23,4 +23,6 @@ public class RefuellingSupervisor {
   * @directed*/
   private AircraftManagementDatabase lnkUnnamed;
 
+  public RefuellingSupervisor(AircraftManagementDatabase aircraftManagementDatabase) {
+  }
 }
