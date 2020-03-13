@@ -73,9 +73,4 @@ public class GateInfoDatabase extends Observable {
   public void departed(int gateNumber){
 	  gates[gateNumber].departed();
   }
-
-    @Override
-    public void update(Observable o, Object arg) {
-
-    }
 }
