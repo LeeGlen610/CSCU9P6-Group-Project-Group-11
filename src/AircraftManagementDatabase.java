@@ -78,7 +78,7 @@ public class AircraftManagementDatabase extends Observable {
      * Just the mCodes of those MRs with the given status supplied as a parameter.
      * Principally for call by the various interface screens.
      */
-    public int[] getWithStatus(int statusCode) {
+    public int[] getWithStatus(int statusCode) throws NullPointerException {
         int[] mCodesStatus = new int[maxMRs];
         int counter = 1;
       for (int i = 0; i < maxMRs; i++) {
@@ -99,6 +99,8 @@ public class AircraftManagementDatabase extends Observable {
       for (int i = 0; i < MRs.length; i++) {
         if (MRs[i].getStatus() == 0){
           MRs[i].radarDetect(fd);
+          setChanged();
+          notifyObservers();
         }
       }
     }
@@ -108,6 +110,8 @@ public class AircraftManagementDatabase extends Observable {
      */
     public void radarLostContact(int mCode) {
       MRs[mCode].radarLostContact();
+      setChanged();
+      notifyObservers();
     }
 
     /**
@@ -115,6 +119,8 @@ public class AircraftManagementDatabase extends Observable {
      */
     public void taxiTo(int mCode, int gateNumber) {
       MRs[mCode].taxiTo(gateNumber);
+        setChanged();
+        notifyObservers();
     }
 
     /**
@@ -122,6 +128,8 @@ public class AircraftManagementDatabase extends Observable {
      */
     public void faultsFound(int mCode, String description) {
       MRs[mCode].faultsFound(description);
+      setChanged();
+      notifyObservers();
     }
 
     /**
@@ -129,6 +137,8 @@ public class AircraftManagementDatabase extends Observable {
      */
     public void addPassenger(int mCode, PassengerDetails details) {
         MRs[mCode].addPassenger(details);
+        setChanged();
+        notifyObservers();
     }
 
     /**

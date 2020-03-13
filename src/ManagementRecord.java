@@ -193,8 +193,8 @@ public class ManagementRecord {
   public void radarDetect(FlightDescriptor fd){
     if (status == 0){
       flightCode = fd.getFlightCode();
-      passengerList = fd.getLnkUnnamed1();
-      itinerary = fd.getLnkUnnamed();
+      passengerList = fd.getList();
+      itinerary = fd.getItinerary();
         if (itinerary.getTo().equalsIgnoreCase("Stirling")){
           status = 2;
         } else {

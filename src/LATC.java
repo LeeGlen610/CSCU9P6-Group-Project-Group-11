@@ -35,6 +35,11 @@ public class LATC implements Observer {
 
   @Override
   public void update(Observable observable, Object o) {
-
+      GateInfoDatabase gateDatabase = null;
+      try{
+      gateDatabase = (GateInfoDatabase) o;
+    }catch (ClassCastException f){
+      System.out.println(f.getMessage());
+    }
   }
 }
