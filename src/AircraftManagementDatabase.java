@@ -80,9 +80,11 @@ public class AircraftManagementDatabase extends Observable {
      */
     public int[] getWithStatus(int statusCode) {
         int[] mCodesStatus = new int[maxMRs];
+        int counter = 1;
       for (int i = 0; i < maxMRs; i++) {
         if (MRs[i].getStatus() == statusCode){
-          mCodesStatus[i] = i;
+          mCodesStatus[counter] = i;
+          counter++;
         }
       }
       return mCodesStatus;
