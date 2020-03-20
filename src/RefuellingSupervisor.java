@@ -30,49 +30,49 @@ public class RefuellingSupervisor extends JFrame
   * @label accesses/observes
   * @directed*/
  // private AircraftManagementDatabase lnkUnnamed;
-  private JButton showStatus;
-  private JButton update;
-  private JButton quit;
+  private JButton awaitRefuelling;
+  private JButton doneRefuelling;
 
-  public RefuellingSupervisor(AircraftManagementDatabase aircraftManagementDatabase,String title, int locationX, int locationY) {
+  public RefuellingSupervisor(AircraftManagementDatabase aircraftManagementDatabase) {
     this.aircraftManagementDatabase = aircraftManagementDatabase;
 
-    setTitle("Controller4");
-    setLocation(locationX, locationY);
+
     setSize(350,150);
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     Container window = getContentPane();
     window.setLayout(new FlowLayout());
 
 
-    update = new JButton("Update");
-    window.add(update);
-    update.addActionListener(this);
+    awaitRefuelling = new JButton("Await Refuelling");
+    window.add(awaitRefuelling);
+    awaitRefuelling.addActionListener(this);
 
 
     // show status button
-    showStatus = new JButton("Status");
-    window.add(showStatus);
-    showStatus.addActionListener(this);
-
-    //quit button
-    quit = new JButton("Quit");
-    window.add(quit);
-    quit.addActionListener(this);
+    doneRefuelling = new JButton("Done Refuelling");
+    window.add(doneRefuelling);
+    doneRefuelling.addActionListener(this);
 
 
+    add(new JLabel("Refuelling supervisor view"));
+    display = new JTextField("", 15);
+    add(display);
     setVisible(true);
   }
 
 
   @Override
   public void actionPerformed(ActionEvent e) {
-    if (e.getSource() == showStatus)
 
-      if (e.getSource() == update)
+      if (e.getSource() == awaitRefuelling) {
+        //managementRecord.getStatus();
+        //managementRecord.getFlightCode();
+        display.setText(ManagementRecord.getStatus());
+        display.setText(ManagementRecord.getFlightCode());
+      }
 
-        if (e.getSource() == quit)
-          System.exit(0);
+       else if (e.getSource() == doneRefuelling) {
 
+       }
   }
 }
