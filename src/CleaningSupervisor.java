@@ -29,46 +29,59 @@ public class CleaningSupervisor extends JFrame
   * @label accesses/observes
   * @directed*/
   //private AircraftManagementDatabase lnkUnnamed;
-  private JButton showStatus;
-  private JButton update;
-  private JButton quit;
+  private JButton awaitMaintenance;
+  private JButton awaitRepair;
+  private JButton doneCleaning;
 
-  public CleaningSupervisor(AircraftManagementDatabase aircraftManagementDatabase,String title, int locationX, int locationY) {
+
+  public CleaningSupervisor(AircraftManagementDatabase aircraftManagementDatabase) {
     this.aircraftManagementDatabase = aircraftManagementDatabase;
-    setTitle("Controller5");
-    setLocation(locationX, locationY);
+
     setSize(350,150);
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     Container window = getContentPane();
     window.setLayout(new FlowLayout());
 
     // update button
-    update = new JButton("Update");
-    window.add(update);
-    update.addActionListener(this);
+    awaitMaintenance = new JButton("Await Maintenance");
+    window.add(awaitMaintenance);
+      awaitMaintenance.addActionListener(this);
 
 
     // show status button
-    showStatus = new JButton("Status");
-    window.add(showStatus);
-    showStatus.addActionListener(this);
+    awaitRepair = new JButton("Await Repair");
+    window.add(awaitRepair);
+      awaitRepair.addActionListener(this);
 
     //quit button
-    quit = new JButton("Quit");
-    window.add(quit);
-    quit.addActionListener(this);
+    doneCleaning = new JButton("Done Cleaning");
+    window.add(doneCleaning);
+    doneCleaning.addActionListener(this);
 
+      add(new JLabel("cleaning supervisor view"));
+      display = new JTextField("", 15);
+      add(display);
 
     setVisible(true);
+    show();
   }
 
   @Override
   public void actionPerformed(ActionEvent e) {
-    if (e.getSource() == showStatus)
+    if (e.getSource() == awaitMaintenance) {
+         //managementRecord.getStatus();
+        //managementRecord.getFlightCode();
+        display.setText(ManagementRecord.getStatus());
+        display.setText(ManagementRecord.getFlightCode());
+    }
+    else if (e.getSource() == awaitRepair) {
+        //managementRecord.getStatus();
+        //managementRecord.getFlightCode();
+        display.setText(ManagementRecord.getStatus());
+        display.setText(ManagementRecord.getFlightCode());
+    }
+    else if (e.getSource() != doneCleaning) {
 
-    if (e.getSource() == update)
-
-    if (e.getSource() == quit)
-      System.exit(0);
-  }
+    }
+    }
 }
