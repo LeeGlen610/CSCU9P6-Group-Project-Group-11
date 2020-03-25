@@ -4,6 +4,8 @@
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
@@ -15,6 +17,7 @@ import java.util.Observer;
  * This class is a controller for the GateInfoDatabase and the AircraftManagementDatabase: sending them messages to change the gate or aircraft status information.
  * This class also registers as an observer of the GateInfoDatabase and the AircraftManagementDatabase, and is notified whenever any change occurs in those <<model>> elements.
  * See written documentation.
+ *
  * @stereotype boundary/view/controller
  * @url element://model:project::SAAMS/design:node:::id2wdkkcko4qme4cko4svm2.node36
  * @url element://model:project::SAAMS/design:view:::id2wdkkcko4qme4cko4svm2
@@ -23,70 +26,233 @@ import java.util.Observer;
  * @url element://model:project::SAAMS/design:view:::id15rnfcko4qme4cko4swib
  * @url element://model:project::SAAMS/design:node:::id15rnfcko4qme4cko4swib.node107
  */
-public class GOC extends JFrame implements Observer {
-/** The Ground Operations Controller Screen interface has access to the GateInfoDatabase.
-  * @clientCardinality 1
-  * @supplierCardinality 1
-  * @label accesses/observes
-  * @directed*/
-  private GateInfoDatabase gateInfoDatabase;
-/**
-  * The Ground Operations Controller Screen interface has access to the AircraftManagementDatabase.
-  * @clientCardinality 1
-  * @supplierCardinality 1
-  * @label accesses/observes
-  * @directed*/
-  private AircraftManagementDatabase aircraftManagementDatabase;
+public class GOC extends JFrame implements ActionListener, Observer {
+    /**
+     * The Ground Operations Controller Screen interface has access to the GateInfoDatabase.
+     *
+     * @clientCardinality 1
+     * @supplierCardinality 1
+     * @label accesses/observes
+     * @directed
+     */
+    private GateInfoDatabase gateInfoDatabase;
+    /**
+     * The Ground Operations Controller Screen interface has access to the AircraftManagementDatabase.
+     *
+     * @clientCardinality 1
+     * @supplierCardinality 1
+     * @label accesses/observes
+     * @directed
+     */
+    private AircraftManagementDatabase aircraftManagementDatabase;
 
-  public GOC(AircraftManagementDatabase aircraftManagementDatabase, GateInfoDatabase gateInfoDatabase) {
-    this.aircraftManagementDatabase = aircraftManagementDatabase;
-    this.gateInfoDatabase = gateInfoDatabase;
+    private JLabel labelForFlightCodes;
+    private JLabel flightCodes;
+    private JLabel labelForFlightStatus;
+    private JLabel flightStatus;
+    private JLabel firstGateLabel;
+    private JLabel firstGateCurrentStatus;
+    private JLabel secondGateLabel;
+    private JLabel secondGateCurrentStatus;
+    private JPanel listPanel = new JPanel();
+    private JButton okGroundClearance;
+    private JButton allocateAGate;
+    private JButton taxi;
+    private JList<ManagementRecord> aircrafts;
+    private DefaultListModel<ManagementRecord> listModelOfManagement;
+    private int managementRecordIndex = -1;
+    private boolean buttonAvaliablity = false;
 
-    setTitle("GOC View");
-    setLocation(150, 150);
-    setSize(350,150);
-    Container window = getContentPane();
-    window.setLayout(new FlowLayout());
+    public GOC(AircraftManagementDatabase aircraftManagementDatabase, GateInfoDatabase gateInfoDatabase) {
+        this.aircraftManagementDatabase = aircraftManagementDatabase;
+        this.gateInfoDatabase = gateInfoDatabase;
 
-    String[] aircraftCodes = checkForAircraft();
+        setTitle("GOC View");
+        setLocation(150, 150);
+        setSize(350, 150);
+        Container window = getContentPane();
+        window.setLayout(new FlowLayout());
 
-    JList<String> aircrafts = new JList<>(aircraftCodes);
-    aircrafts.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-    aircrafts.setLayoutOrientation(JList.VERTICAL_WRAP);
-    JScrollPane aircraftScroll = new JScrollPane(aircrafts);
-    aircraftScroll.setPreferredSize(new Dimension(350, 150));
+        labelForFlightCodes = new JLabel("Flight Code: ");
+        window.add(labelForFlightCodes);
+        flightCodes = new JLabel("");
+        window.add(flightCodes);
 
+        labelForFlightStatus = new JLabel("Flight Status: ");
+        window.add(labelForFlightStatus);
+        flightStatus = new JLabel("");
+        window.add(flightStatus);
 
-    aircraftManagementDatabase.addObserver(this);
-    gateInfoDatabase.addObserver(this);
-  }
+        firstGateLabel = new JLabel("Gate1: ");
+        window.add(firstGateLabel);
+        firstGateCurrentStatus = new JLabel("Status is FREE");
+        window.add(firstGateCurrentStatus);
 
-  public String[] checkForAircraft(){
-    int[] MRs = aircraftManagementDatabase.getWithStatus(1);
-    String[] aircraftCodes = new String[MRs.length];
-    for (int i = 0; i < MRs.length; i++) {
-      aircraftCodes[i] = aircraftManagementDatabase.getFlightCode(MRs[i]);
+        secondGateLabel = new JLabel("Gate2: ");
+        window.add(secondGateLabel);
+
+        secondGateCurrentStatus = new JLabel("Status is FREE");
+        window.add(secondGateCurrentStatus);
+
+        okGroundClearance = new JButton("Good For Ground Clearance");
+        window.add(okGroundClearance);
+        okGroundClearance.addActionListener(this::actionPerformed);
+
+        allocateAGate = new JButton("Allocate A Gate To Flight");
+        window.add(allocateAGate);
+        allocateAGate.addActionListener(this::actionPerformed);
+
+        taxi = new JButton("Taxi Flight To Gate");
+        window.add(taxi);
+        taxi.addActionListener(this::actionPerformed);
+
+        listModelOfManagement = new DefaultListModel<ManagementRecord>();
+
+        aircrafts = new JList<>(listModelOfManagement);
+
+        aircrafts.addListSelectionListener(e -> itemSelected());
+
+        JScrollPane scroll = new JScrollPane(aircrafts);
+
+        scroll.setPreferredSize(new Dimension(500, 300));
+        scroll.setMinimumSize(new Dimension(500, 300));
+
+        listPanel.add(scroll);
+
+        listModelOfManagement.setSize(aircraftManagementDatabase.maxMRs);
+
+        updateRecords();
+        updateGates();
+        window.add(listPanel);
+        itemSelected();
+        setVisible(true);
+
+        aircraftManagementDatabase.addObserver(this);
+        gateInfoDatabase.addObserver(this);
     }
-    return aircraftCodes;
-  }
 
-  @Override
-  public void update(Observable observable, Object o) {
-    AircraftManagementDatabase aircraftDatabase = null;
-    GateInfoDatabase gateDatabase = null;
-    try {
-        aircraftDatabase = (AircraftManagementDatabase) o;
-    } catch (ClassCastException e){
-      try{
-        gateDatabase = (GateInfoDatabase) o;
-      }catch (ClassCastException f){
-        System.out.println(f.getMessage());
+    private void updateRecords() {
+        for (int i = 0; i < aircraftManagementDatabase.maxMRs; i++) {
+            ManagementRecord managementRecord = aircraftManagementDatabase.getMR(i);
+
+            if (managementRecord == null) {
+                listModelOfManagement.set(i, null);
+            } else {
+                listModelOfManagement.set(i, managementRecord);
+            }
+        }
+    }
+
+    private void itemSelected() {
+        if (!aircrafts.getValueIsAdjusting()) {
+            if (aircrafts.getSelectedValue() == null) {
+                managementRecordIndex = -1;
+                labelForFlightCodes.setText("UNKNOWN");
+                labelForFlightStatus.setText("UNKNOWN");
+                if (buttonAvaliablity) {
+                    buttonAvaliablity = false;
+                }
+                updateButtons();
+            } else {
+                managementRecordIndex = aircrafts.getSelectedIndex();
+                labelForFlightCodes.setText(aircraftManagementDatabase.getFlightCode(managementRecordIndex));
+                labelForFlightStatus.setText(aircraftManagementDatabase.getStatus(managementRecordIndex));
+                if (!buttonAvaliablity) {
+                    buttonAvaliablity = true;
+                }
+                updateButtons();
+            }
+        }
+    }
+
+    public void updateButtons() {
+      if (!buttonAvaliablity) {
+        allocateAGate.setEnabled(false);
+        okGroundClearance.setEnabled(false);
+        taxi.setEnabled(false);
+
+      } else {
+        String status = aircraftManagementDatabase.getStatus(managementRecordIndex);
+
+        okGroundClearance.setEnabled(status.equals("WAITING_TO_LAND"));
+
+        taxi.setEnabled(status.equals("AWAITING_TAXI"));
+
+        int gateStatus[] = gateInfoDatabase.getStatuses();
+        int gateArraySize = gateStatus.length;
+        int currentStatus = 0;
+        for (int i = 0; i < gateArraySize; i++) {
+          if (gateStatus[i] == 0) {
+            currentStatus = gateStatus[i];
+          }
+        }
+        if ((status.equals("LANDED")) && currentStatus == 0) {
+            allocateAGate.setEnabled(true);
+        }
       }
     }
-    if (aircraftDatabase != null){
-      aircraftManagementDatabase = aircraftDatabase;
-    } else if (gateDatabase != null){
-      gateInfoDatabase = gateDatabase;
+
+    public void updateGates(){
+        int firstGateStatus = gateInfoDatabase.getStatus(0);
+        int secondGateStatus = gateInfoDatabase.getStatus(1);
+        firstGateCurrentStatus.setText(statusOfGate(firstGateStatus));
+        secondGateCurrentStatus.setText(statusOfGate(secondGateStatus));
     }
-  }
+
+    public String statusOfGate(int status){
+        switch (status){
+            case 1:
+                return "FREE";
+            case 2:
+                return "RESERVED";
+            case 3:
+                return "OCCUPIED";
+            default:
+                return "UNKNOWN";
+        }
+    }
+
+    @Override
+    public void update(Observable observable, Object o) {
+        updateRecords();
+        updateGates();
+        itemSelected();
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == okGroundClearance) {
+            aircraftManagementDatabase.setStatus(managementRecordIndex, 3);
+        }
+
+        if (e.getSource() == allocateAGate) {
+            int recordIndex = -1;
+            int maxNumberOfGates = gateInfoDatabase.getStatuses().length;
+
+            // search through and find a free gate
+            for (int i = 0; i < maxNumberOfGates; i++) {
+                if (gateInfoDatabase.getStatus(i) == 0) {
+                    recordIndex = i;
+                    break;
+                }
+            }
+
+            if (recordIndex == -1) {
+                JOptionPane.showMessageDialog(null, "No gates are currently free!");
+            } else {
+                gateInfoDatabase.allocate(recordIndex, managementRecordIndex);
+                aircraftManagementDatabase.taxiTo(recordIndex, managementRecordIndex);
+                aircraftManagementDatabase.setStatus(recordIndex, 6);
+            }
+
+        }
+
+        if (e.getSource() == taxi) {
+
+            int assignedGate = aircraftManagementDatabase.getGateNumber(managementRecordIndex);
+
+            aircraftManagementDatabase.setStatus(managementRecordIndex, 17);
+            gateInfoDatabase.departed(assignedGate);
+        }
+    }
 }
