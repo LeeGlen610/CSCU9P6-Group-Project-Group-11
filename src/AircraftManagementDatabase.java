@@ -34,8 +34,8 @@ public class AircraftManagementDatabase extends Observable {
     /**
      * Return the status of the MR with the given mCode supplied as a parameter.
      */
-    public int getStatus(int mCode) {
-        return MRs[mCode].getStatus();
+    public String getStatus(int mCode) {
+        return MRs[mCode].getStatus(mCode);
     }
 
     /**
@@ -81,13 +81,17 @@ public class AircraftManagementDatabase extends Observable {
     public int[] getWithStatus(int statusCode) throws NullPointerException {
         int[] mCodesStatus = new int[maxMRs];
         int counter = 1;
-      for (int i = 0; i < maxMRs; i++) {
-        if (MRs[i].getStatus() == statusCode){
-          mCodesStatus[counter] = i;
-          counter++;
+        for (int i = 0; i < maxMRs; i++) {
+            if (MRs[i].getStatus() == statusCode) {
+                mCodesStatus[counter] = i;
+                counter++;
+            }
         }
-      }
-      return mCodesStatus;
+        return mCodesStatus;
+    }
+
+    public ManagementRecord getMR(int recordIdentifier) {
+        return MRs[recordIdentifier];
     }
 
     /**
@@ -96,40 +100,50 @@ public class AircraftManagementDatabase extends Observable {
      * This operation finds a currently FREE MR and forwards the radarDetect request to it for recording.
      */
     public void radarDetect(FlightDescriptor fd) {
-      for (int i = 0; i < MRs.length; i++) {
-        if (MRs[i].getStatus() == 0){
-          MRs[i].radarDetect(fd);
-          setChanged();
-          notifyObservers();
+        int freeMR = 0;
+        for (int i = 0; i < MRs.length; i++) {
+            if (MRs[i] == null) {
+                freeMR = i;
+                break;
+            }
         }
-      }
+
+        MRs[freeMR] = new ManagementRecord();
+        MRs[freeMR].setStatus(0);
+        MRs[freeMR].radarDetect(fd);
+        setChanged();
+        notifyObservers();
     }
 
     /**
      * The aircraft in the MR given by mCode supplied as a parameter has departed from the local airspace. The message is forwarded to the MR, which can then delete/archive its contents and become FREE.
      */
     public void radarLostContact(int mCode) {
-      MRs[mCode].radarLostContact();
-      setChanged();
-      notifyObservers();
+        MRs[mCode].radarLostContact();
+        setChanged();
+        notifyObservers();
     }
 
     /**
      * A GOC has allocated the given gate to the aircraft with the given mCode supplied as a parameter for unloading passengers. The message is forwarded to the given MR for status update.
      */
     public void taxiTo(int mCode, int gateNumber) {
-      MRs[mCode].taxiTo(gateNumber);
+        MRs[mCode].taxiTo(gateNumber);
         setChanged();
         notifyObservers();
+    }
+
+    public int getGateNumber(int mCode) {
+        return MRs[mCode].getGateNumber();
     }
 
     /**
      * The Maintenance Supervisor has reported faults with the given description in the aircraft with the given mCode. The message is forwarded to the given MR for status update.
      */
     public void faultsFound(int mCode, String description) {
-      MRs[mCode].faultsFound(description);
-      setChanged();
-      notifyObservers();
+        MRs[mCode].faultsFound(description);
+        setChanged();
+        notifyObservers();
     }
 
     /**

@@ -34,12 +34,20 @@ public class GateInfoDatabase extends Observable {
    */
   public int maxGateNumber = 2;
 
-/**
+    public GateInfoDatabase() {
+        gates = new Gate[maxGateNumber];
+        for (int i = 0; i < maxGateNumber; i++) {
+            gates[i] = new Gate();
+        }
+    }
+
+    /**
  * Obtain and return the status of the given gate identified by the gateNumber parameter.
  */
   public int getStatus(int gateNumber){
 	  return gates[gateNumber].getStatus();
   }
+
 
 /**
  * Returns an array containing the status of all gates.

@@ -23,11 +23,18 @@ public class PassengerList {
  */
 
   private ArrayList<PassengerDetails> details;
-/**
+
+  public PassengerList() {
+    details = new ArrayList<>();
+  }
+
+  /**
  * The given passenger is boarding.
  * Their details are recorded, in the passenger list.
  * @preconditions Status is READY_PASSENGERS
  */
+
+
   public void addPassenger(PassengerDetails details){
     this.details.add(details);
   }

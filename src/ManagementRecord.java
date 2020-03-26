@@ -8,6 +8,7 @@
  * This class has public static int identifiers for the individual status codes.
  * An MR may be "FREE", or may contain a record of the status of an individual aircraft under the management of SAAMS.
  * An instance of AircraftManagementDatabase holds a collection of ManagementRecords, and sends the ManagementRecords messages to control/fetch their status.
+ *
  * @stereotype entity
  * @url element://model:project::SAAMS/design:node:::id15rnfcko4qme4cko4swib.node107
  * @url element://model:project::SAAMS/design:view:::id3oolzcko4qme4cko4sx40
@@ -20,249 +21,363 @@
  */
 public class ManagementRecord {
 
-/** Status code: This MR is currently not managing any aircraft information
- *
- * See MRState diagram.*/
-  public static int FREE = 0;
+    /**
+     * Status code: This MR is currently not managing any aircraft information
+     * <p>
+     * See MRState diagram.
+     */
+    public static int FREE = 0;
 
-/** Status code
- *
- * See MRState diagram.*/
-  public static int IN_TRANSIT = 1;
+    /**
+     * Status code
+     * <p>
+     * See MRState diagram.
+     */
+    public static int IN_TRANSIT = 1;
 
-/** Status code
- *
- * See MRState diagram.*/
-  public static int WANTING_TO_LAND = 2;
+    /**
+     * Status code
+     * <p>
+     * See MRState diagram.
+     */
+    public static int WANTING_TO_LAND = 2;
 
-/** Status code
- *
- * See MRState diagram.*/
-  public static int GROUND_CLEARANCE_GRANTED = 3;
+    /**
+     * Status code
+     * <p>
+     * See MRState diagram.
+     */
+    public static int GROUND_CLEARANCE_GRANTED = 3;
 
-/** Status code
- *
- * See MRState diagram.*/
-  public static int LANDING = 4;
+    /**
+     * Status code
+     * <p>
+     * See MRState diagram.
+     */
+    public static int LANDING = 4;
 
-/** Status code
- *
- * See MRState diagram.*/
-  public static int LANDED = 5;
+    /**
+     * Status code
+     * <p>
+     * See MRState diagram.
+     */
+    public static int LANDED = 5;
 
-/** Status code
- *
- * See MRState diagram.*/
-  public static int TAXIING = 6;
+    /**
+     * Status code
+     * <p>
+     * See MRState diagram.
+     */
+    public static int TAXIING = 6;
 
-/** Status code
- *
- * See MRState diagram.*/
-  public static int UNLOADING = 7;
+    /**
+     * Status code
+     * <p>
+     * See MRState diagram.
+     */
+    public static int UNLOADING = 7;
 
-/** Status code
- *
- * See MRState diagram.*/
-  public static int READY_CLEAN_AND_MAINT = 8;
+    /**
+     * Status code
+     * <p>
+     * See MRState diagram.
+     */
+    public static int READY_CLEAN_AND_MAINT = 8;
 
-/** Status code
- *
- * See MRState diagram.*/
-  public static int FAULTY_AWAIT_CLEAN = 9;
+    /**
+     * Status code
+     * <p>
+     * See MRState diagram.
+     */
+    public static int FAULTY_AWAIT_CLEAN = 9;
 
-  /** Status code
-   *
-   * See MRState diagram.*/
-  public static int OK_AWAIT_CLEAN = 11;
+    /**
+     * Status code
+     * <p>
+     * See MRState diagram.
+     */
+    public static int OK_AWAIT_CLEAN = 11;
 
-/** Status code
- *
- * See MRState diagram.*/
-  public static int CLEAN_AWAIT_MAINT = 10;
+    /**
+     * Status code
+     * <p>
+     * See MRState diagram.
+     */
+    public static int CLEAN_AWAIT_MAINT = 10;
 
-/** Status code
- *
- * See MRState diagram.*/
-  public static int AWAIT_REPAIR = 12;
+    /**
+     * Status code
+     * <p>
+     * See MRState diagram.
+     */
+    public static int AWAIT_REPAIR = 12;
 
-/** Status code
- *
- * See MRState diagram.*/
-  public static int READY_REFUEL = 13;
+    /**
+     * Status code
+     * <p>
+     * See MRState diagram.
+     */
+    public static int READY_REFUEL = 13;
 
-/** Status code
- *
- * See MRState diagram.*/
-  public static int READY_PASSENGERS = 14;
+    /**
+     * Status code
+     * <p>
+     * See MRState diagram.
+     */
+    public static int READY_PASSENGERS = 14;
 
-/** Status code
- *
- * See MRState diagram.*/
-  public static int READY_DEPART = 15;
+    /**
+     * Status code
+     * <p>
+     * See MRState diagram.
+     */
+    public static int READY_DEPART = 15;
 
-/** Status code
- *
- * See MRState diagram.*/
-  public static int AWAITING_TAXI = 16;
+    /**
+     * Status code
+     * <p>
+     * See MRState diagram.
+     */
+    public static int AWAITING_TAXI = 16;
 
-/** Status code
- *
- * See MRState diagram.*/
-  public static int AWAITING_TAKEOFF = 17;
+    /**
+     * Status code
+     * <p>
+     * See MRState diagram.
+     */
+    public static int AWAITING_TAKEOFF = 17;
 
-/** Status code
- *
- * See MRState diagram.*/
-  public static int DEPARTING_THROUGH_LOCAL_AIRSPACE = 18;
+    /**
+     * Status code
+     * <p>
+     * See MRState diagram.
+     */
+    public static int DEPARTING_THROUGH_LOCAL_AIRSPACE = 18;
 
-/** The status code for this ManagementRecord.*/
-  private int status;
+    /**
+     * The status code for this ManagementRecord.
+     */
+    private int status;
 
-  /**
-   * The gate number allocated to this aircraft, when there is one.
-   */
-  private int gateNumber;
+    /**
+     * The gate number allocated to this aircraft, when there is one.
+     */
+    private int gateNumber;
 
-/** A short string identifying the flight:
- *
- * Usually airline abbreviation plus number, e.g. BA127.
- * Obtained from the flight descriptor when the aircraft is first detected.
- *
- * This is the code used in timetables, and is useful to show on public information screens.*/
-  private String flightCode;
+    /**
+     * A short string identifying the flight:
+     * <p>
+     * Usually airline abbreviation plus number, e.g. BA127.
+     * Obtained from the flight descriptor when the aircraft is first detected.
+     * <p>
+     * This is the code used in timetables, and is useful to show on public information screens.
+     */
+    private String flightCode;
 
-  /**
- * Holds the aircraft's itinerary.
- * Downloaded from the flight descriptor when the aircraft is first detected.
- * @clientCardinality 1
- * @directed true
- * @label contains
- * @shapeType AggregationLink
- * @supplierCardinality 1
- */
-  private Itinerary itinerary;
+    /**
+     * Holds the aircraft's itinerary.
+     * Downloaded from the flight descriptor when the aircraft is first detected.
+     *
+     * @clientCardinality 1
+     * @directed true
+     * @label contains
+     * @shapeType AggregationLink
+     * @supplierCardinality 1
+     */
+    private Itinerary itinerary;
 
-  /**
- * The list of passengers on the aircraft.
- * Incoming flights supply their passenger list in their flight decsriptor.
- * Outbound flights have passenger lists built from passenger details supplied by the gate consoles.
- * @clientCardinality 1
- * @directed true
- * @label contains
- * @shapeType AggregationLink
- * @supplierCardinality 1
- */
-  private PassengerList passengerList;
+    /**
+     * The list of passengers on the aircraft.
+     * Incoming flights supply their passenger list in their flight decsriptor.
+     * Outbound flights have passenger lists built from passenger details supplied by the gate consoles.
+     *
+     * @clientCardinality 1
+     * @directed true
+     * @label contains
+     * @shapeType AggregationLink
+     * @supplierCardinality 1
+     */
+    private PassengerList passengerList;
 
-  /**
-   * Contains a description of what is wrong with the aircraft if it is found to be faulty during maintenance inspection.
-   */
-  private String faultDescription;
+    /**
+     * Contains a description of what is wrong with the aircraft if it is found to be faulty during maintenance inspection.
+     */
+    private String faultDescription;
 
 
-/**
-  * Request to set the MR into a new status.
-  *
-  * Only succeeds if the state change conforms to the MRState diagram.
-  *
-  * This is a general purpose state change request where no special details accompany the state change.
-  * [Special status changers are, for example, "taxiTo", where a gate number is supplied.]
-  * @preconditions Valid transition requested*/
-  public void setStatus(int newStatus){
-    status = newStatus;
-  }
+    /**
+     * Request to set the MR into a new status.
+     * <p>
+     * Only succeeds if the state change conforms to the MRState diagram.
+     * <p>
+     * This is a general purpose state change request where no special details accompany the state change.
+     * [Special status changers are, for example, "taxiTo", where a gate number is supplied.]
+     *
+     * @preconditions Valid transition requested
+     */
+    public void setStatus(int newStatus) {
+        status = newStatus;
+    }
 
-  /**
-   * Return the status code of this MR.
-   */
-  public int getStatus(){
-    return status;
-  }
+    /**
+     * Return the status code of this MR.
+     */
+    public int getStatus() {
+        return status;
+    }
 
-  /**
-   * Return the flight code of this MR.
-   */
-  public String getFlightCode(){
-    return flightCode;
-  }
-
-/** Sets up the MR with details of newly detected flight
-  *
-  * Status must be FREE now, and becomes either IN_TRANSIT or WANTING_TO_LAND depending on the details in the flight descriptor.
-  * @preconditions Status is FREE*/
-  public void radarDetect(FlightDescriptor fd){
-    if (status == 0){
-      flightCode = fd.getFlightCode();
-      passengerList = fd.getList();
-      itinerary = fd.getItinerary();
-        if (itinerary.getTo().equalsIgnoreCase("Stirling")){
-          status = 2;
-        } else {
-          status = 1;
+    public String getStatus(int mCode) {
+        switch (mCode) {
+            case 0:
+                return "FREE";
+            case 1:
+                return "IN_TRANSIT";
+            case 2:
+                return "WAITING_TO_LAND";
+            case 3:
+                return "GROUND_CLEARANCE_GRANTED";
+            case 4:
+                return "LANDING";
+            case 5:
+                return "LANDED";
+            case 6:
+                return "TAXING";
+            case 7:
+                return "UNLOADING";
+            case 8:
+                return "READY_CLEAN_AND_MAINT";
+            case 9:
+                return "FAULTY_AWAIT_CLEAN";
+            case 10:
+                return "CLEAN_AWAIT_MAINT";
+            case 11:
+                return "OK_AWAIT_CLEAN";
+            case 12:
+                return "AWAIT_REPAIR";
+            case 13:
+                return "READY_REFUEL";
+            case 14:
+                return "READY_PASSENGERS";
+            case 15:
+                return "READY_DEPART";
+            case 16:
+                return "AWAITING_TAXI";
+            case 17:
+                return "AWAITING_TAKEOFF";
+            case 18:
+                return "DEPARTING_THROUGH_LOCAL_AIRSPACE";
+            default:
+                return "UNKNOWN";
         }
     }
-  }
 
-/** This aircraft has departed from local airspace.
-  *
-  * Status must have been either IN_TRANSIT or DEPARTING_THROUGH_LOCAL_AIRSPACE, and becomes FREE (and the flight details are cleared).
-  * @preconditions Status is IN_TRANSIT or DEPARTING_THROUGH_LOCAL_AIRSPACE*/
-  public void radarLostContact(){
-    if (status == 1 || status == 18){
-      status = 0;
-      flightCode = "";
-      passengerList = null;
-      faultDescription = "";
-      itinerary = null;
-      gateNumber = 0;
+    /**
+     * Return the flight code of this MR.
+     */
+    public String getFlightCode() {
+        return flightCode;
     }
-  }
 
-/** GOC has allocated the given gate for unloading passengers.
-  *
-  * The gate number is recorded.The status must have been LANDED and becomes TAXIING.
-  * @preconditions Status is LANDED*/
-  public void taxiTo(int gateNumber){
-    if (status == 5) {
-      status = 6;
-      this.gateNumber = gateNumber;
+    /**
+     * Sets up the MR with details of newly detected flight
+     * <p>
+     * Status must be FREE now, and becomes either IN_TRANSIT or WANTING_TO_LAND depending on the details in the flight descriptor.
+     *
+     * @preconditions Status is FREE
+     */
+    public void radarDetect(FlightDescriptor fd) {
+        if (status == 0) {
+            flightCode = fd.getFlightCode();
+            passengerList = fd.getList();
+            itinerary = fd.getItinerary();
+            if (itinerary.getNext() == null) {
+                status = 2;
+            } else {
+                status = 1;
+            }
+        }
     }
-  }
 
-/** The Maintenance Supervisor has reported faults.
-  *
-  * The problem description is recorded.
-  *
-  * The status must have been READY_FOR_CLEAN_MAINT or CLEAN_AWAIT_MAINT and becomes FAULTY_AWAIT_CLEAN or AWAIT_REPAIR respectively.
-  * @preconditions Status is READY_FOR_CLEAN_MAINT or CLEAN_AWAIT_MAINT*/
-  public void faultsFound(String description){
-    if (status == 8){
-      status = 9;
-      this.faultDescription = description;
-    } else if (status == 10){
-      status = 12;
-      this.faultDescription = description;
+    public int getGateNumber(){
+        return gateNumber;
     }
-  }
 
-/** The given passenger is boarding this aircraft.
-  *
-  * Their details are recorded in the passengerList.
-  *
-  * For this operation to be applicable, the status must be READY_PASSENGERS, and it doesn't change.
-  * @preconditions Status is READY_PASSENGERS*/
-  public void addPassenger(PassengerDetails details){
-    passengerList.addPassenger(details);
-  }
+    /**
+     * This aircraft has departed from local airspace.
+     * <p>
+     * Status must have been either IN_TRANSIT or DEPARTING_THROUGH_LOCAL_AIRSPACE, and becomes FREE (and the flight details are cleared).
+     *
+     * @preconditions Status is IN_TRANSIT or DEPARTING_THROUGH_LOCAL_AIRSPACE
+     */
+    public void radarLostContact() {
+        if (status == 1 || status == 18) {
+            status = 0;
+            flightCode = "";
+            passengerList = null;
+            faultDescription = "";
+            itinerary = null;
+            gateNumber = 0;
+        }
+    }
 
-/** Return the entire current PassengerList.*/
-  public PassengerList getPassengerList(){
-    return passengerList;
-  }
+    /**
+     * GOC has allocated the given gate for unloading passengers.
+     * <p>
+     * The gate number is recorded.The status must have been LANDED and becomes TAXIING.
+     *
+     * @preconditions Status is LANDED
+     */
+    public void taxiTo(int gateNumber) {
+        if (status == 5) {
+            status = 6;
+            this.gateNumber = gateNumber;
+        }
+    }
 
-/** Return the aircraft's Itinerary.*/
-  public Itinerary getItinerary(){
-    return itinerary;
-  }
+    /**
+     * The Maintenance Supervisor has reported faults.
+     * <p>
+     * The problem description is recorded.
+     * <p>
+     * The status must have been READY_FOR_CLEAN_MAINT or CLEAN_AWAIT_MAINT and becomes FAULTY_AWAIT_CLEAN or AWAIT_REPAIR respectively.
+     *
+     * @preconditions Status is READY_FOR_CLEAN_MAINT or CLEAN_AWAIT_MAINT
+     */
+    public void faultsFound(String description) {
+        if (status == 8) {
+            status = 9;
+            this.faultDescription = description;
+        } else if (status == 10) {
+            status = 12;
+            this.faultDescription = description;
+        }
+    }
+
+    /**
+     * The given passenger is boarding this aircraft.
+     * <p>
+     * Their details are recorded in the passengerList.
+     * <p>
+     * For this operation to be applicable, the status must be READY_PASSENGERS, and it doesn't change.
+     *
+     * @preconditions Status is READY_PASSENGERS
+     */
+    public void addPassenger(PassengerDetails details) {
+        passengerList.addPassenger(details);
+    }
+
+    /**
+     * Return the entire current PassengerList.
+     */
+    public PassengerList getPassengerList() {
+        return passengerList;
+    }
+
+    /**
+     * Return the aircraft's Itinerary.
+     */
+    public Itinerary getItinerary() {
+        return itinerary;
+    }
 
 }
