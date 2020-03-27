@@ -179,7 +179,7 @@ public class GateConsole extends JFrame implements Observer, ActionListener {
 
     if(e.getSource() == buttonDisembarked){
       PassengerList list = aircraftManagementDatabase.getPassengerList(assignedManagementRecordIndex);
-      list.clearPassengers();
+      list.passengersLeft();
       aircraftManagementDatabase.setStatus(assignedManagementRecordIndex, 8);
     }
 
