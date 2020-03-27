@@ -29,7 +29,7 @@ public static void main(String[] args) {
   passengerList.addPassenger(new PassengerDetails("Jon Law"));
   passengerList.addPassenger(new PassengerDetails("Mikey Lemetti"));
 
-  aircraftManagementDatabase.radarDetect(new FlightDescriptor("GLW512", new Itinerary("Glasgow", "Stirling", "Toronto"), passengerList));
+  aircraftManagementDatabase.radarDetect(new FlightDescriptor("GLW512", new Itinerary("Glasgow", "Stirling", "Egypt"), passengerList));
   aircraftManagementDatabase.radarDetect(new FlightDescriptor("STR202", new Itinerary("Florida", "Stirling", null), passengerList));
   aircraftManagementDatabase.radarDetect(new FlightDescriptor("STR207", new Itinerary("Stirling", "India", null), passengerList));
   aircraftManagementDatabase.radarDetect(new FlightDescriptor("MSW210", new Itinerary("Moscow", "Stirling", null), passengerList));
