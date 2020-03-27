@@ -28,6 +28,10 @@ public class PassengerList {
     details = new ArrayList<>();
   }
 
+  public ArrayList<PassengerDetails> getDetails() {
+    return details;
+  }
+
   /**
  * The given passenger is boarding.
  * Their details are recorded, in the passenger list.

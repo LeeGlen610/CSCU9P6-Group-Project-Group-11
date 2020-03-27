@@ -63,6 +63,9 @@ public class AircraftManagementDatabase extends Observable {
      */
     public void setStatus(int mCode, int newStatus) {
         MRs[mCode].setStatus(newStatus);
+        setChanged();
+        notifyObservers();
+
     }
 
     /**

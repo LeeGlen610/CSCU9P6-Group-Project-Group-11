@@ -6,6 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
@@ -69,7 +71,7 @@ public class GOC extends JFrame implements ActionListener, Observer {
 
         setTitle("GOC View");
         setLocation(150, 150);
-        setSize(350, 150);
+        setSize(1000, 500);
         Container window = getContentPane();
         window.setLayout(new FlowLayout());
 
@@ -127,6 +129,13 @@ public class GOC extends JFrame implements ActionListener, Observer {
         itemSelected();
         setVisible(true);
 
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.exit(0);
+            }
+        });
+
         aircraftManagementDatabase.addObserver(this);
         gateInfoDatabase.addObserver(this);
     }
@@ -174,9 +183,11 @@ public class GOC extends JFrame implements ActionListener, Observer {
       } else {
         String status = aircraftManagementDatabase.getStatus(managementRecordIndex);
 
-        okGroundClearance.setEnabled(status.equals("WAITING_TO_LAND"));
-
-        taxi.setEnabled(status.equals("AWAITING_TAXI"));
+        if (status.equals("WAITING_TO_LAND")) {
+            okGroundClearance.setEnabled(true);
+        } else if (status.equals("AWAITING_TAXI")) {
+            taxi.setEnabled(true);
+        }
 
         int gateStatus[] = gateInfoDatabase.getStatuses();
         int gateArraySize = gateStatus.length;
@@ -210,13 +221,6 @@ public class GOC extends JFrame implements ActionListener, Observer {
             default:
                 return "UNKNOWN";
         }
-    }
-
-    @Override
-    public void update(Observable observable, Object o) {
-        updateRecords();
-        updateGates();
-        itemSelected();
     }
 
     @Override
@@ -254,5 +258,12 @@ public class GOC extends JFrame implements ActionListener, Observer {
             aircraftManagementDatabase.setStatus(managementRecordIndex, 17);
             gateInfoDatabase.departed(assignedGate);
         }
+    }
+
+    @Override
+    public void update(Observable observable, Object o) {
+        updateRecords();
+        updateGates();
+        itemSelected();
     }
 }

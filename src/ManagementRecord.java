@@ -290,7 +290,7 @@ public class ManagementRecord {
             flightCode = fd.getFlightCode();
             passengerList = fd.getList();
             itinerary = fd.getItinerary();
-            if (itinerary.getNext() == null) {
+            if (itinerary.getTo().equals("Stirling")) {
                 status = 2;
             } else {
                 status = 1;
@@ -380,4 +380,12 @@ public class ManagementRecord {
         return itinerary;
     }
 
+    @Override
+    public String toString() {
+        if (!(itinerary.getNext() ==null)) {
+            return flightCode + " - From: " + itinerary.getFrom() + " Landing At: " + itinerary.getTo() + " Next Stop: " + itinerary.getNext();
+        } else {
+            return flightCode + " - From: " + itinerary.getFrom() + " Landing At: " + itinerary.getTo();
+        }
+        }
 }

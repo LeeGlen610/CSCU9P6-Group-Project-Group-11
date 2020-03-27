@@ -21,15 +21,28 @@ public static void main(String[] args) {
     // Instantiate and show all interfaces as Frames
   AircraftManagementDatabase aircraftManagementDatabase = new AircraftManagementDatabase(); //database
   GateInfoDatabase gateInfoDatabase = new GateInfoDatabase();
+
+  PassengerList passengerList = new PassengerList();
+
+  passengerList.addPassenger(new PassengerDetails("Margarita Fogou"));
+  passengerList.addPassenger(new PassengerDetails("Lee Glen"));
+  passengerList.addPassenger(new PassengerDetails("Jon Law"));
+  passengerList.addPassenger(new PassengerDetails("Mikey Lemetti"));
+
+  aircraftManagementDatabase.radarDetect(new FlightDescriptor("GLW512", new Itinerary("Glasgow", "Stirling", "Toronto"), passengerList));
+  aircraftManagementDatabase.radarDetect(new FlightDescriptor("STR202", new Itinerary("Florida", "Stirling", null), passengerList));
+  aircraftManagementDatabase.radarDetect(new FlightDescriptor("STR207", new Itinerary("Stirling", "India", null), passengerList));
+  aircraftManagementDatabase.radarDetect(new FlightDescriptor("MSW210", new Itinerary("Moscow", "Stirling", null), passengerList));
+
   GOC c1 = new GOC(aircraftManagementDatabase, gateInfoDatabase);
   LATC c2 =new LATC(aircraftManagementDatabase);
-  MaintenanceInspector c3 = new MaintenanceInspector(aircraftManagementDatabase);
-  RefuellingSupervisor c4 = new RefuellingSupervisor(aircraftManagementDatabase);
-  CleaningSupervisor c5 = new CleaningSupervisor(aircraftManagementDatabase);
-  GateConsole c6 = new GateConsole(aircraftManagementDatabase,gateInfoDatabase);
-  RadarTransceiver c7 = new RadarTransceiver (aircraftManagementDatabase);
-
-
+  PublicInfo c3 = new PublicInfo(aircraftManagementDatabase);
+//  MaintenanceInspector c4 = new MaintenanceInspector(aircraftManagementDatabase);
+//  RefuellingSupervisor c5 = new RefuellingSupervisor(aircraftManagementDatabase);
+//  CleaningSupervisor c6 = new CleaningSupervisor(aircraftManagementDatabase);
+//  GateConsole c7 = new GateConsole(aircraftManagementDatabase,gateInfoDatabase);
+//  RadarTransceiver c8 = new RadarTransceiver (aircraftManagementDatabase);
   }
+
 
 }
