@@ -51,8 +51,8 @@ public class LATC extends JFrame implements Observer, ActionListener {
     public LATC(AircraftManagementDatabase aircraftManagementDatabase) {
         this.aircraftManagementDatabase = aircraftManagementDatabase;
 
-        setTitle("GOC View");
-        setLocation(400, 400);
+        setTitle("LATC View");
+        setLocation(400, 600);
         setSize(1000, 700);
         Container window = getContentPane();
         window.setLayout(new FlowLayout());
@@ -119,10 +119,11 @@ public class LATC extends JFrame implements Observer, ActionListener {
 
             if (managementRecord == null) {
                 listModelOfManagement.set(i, null);
-            } else if (managementRecord.getStatus(managementRecordIndex).equalsIgnoreCase("LANDING")
-                    || managementRecord.getStatus(managementRecordIndex).equalsIgnoreCase("DEPARTING_THROUGH_LOCAL_AIRSPACE")
-                    || managementRecord.getStatus(managementRecordIndex).equalsIgnoreCase("LANDED")
-                    || managementRecord.getStatus(managementRecordIndex).equalsIgnoreCase("AWAITING_TAXI")) {
+            } else if (managementRecord.getStatus(managementRecord.getStatus()).equalsIgnoreCase("LANDING")
+                    || managementRecord.getStatus(managementRecord.getStatus()).equalsIgnoreCase("DEPARTING_THROUGH_LOCAL_AIRSPACE")
+                    || managementRecord.getStatus(managementRecord.getStatus()).equalsIgnoreCase("LANDED")
+                    || managementRecord.getStatus(managementRecord.getStatus()).equalsIgnoreCase("AWAITING_TAXI")
+                    || managementRecord.getStatus(managementRecord.getStatus()).equalsIgnoreCase("GROUND_CLEARANCE_GRANTED")) {
                 listModelOfManagement.set(i, managementRecord);
             }
         }
@@ -162,13 +163,24 @@ public class LATC extends JFrame implements Observer, ActionListener {
 
         if (status.equalsIgnoreCase("GROUND_CLEARANCE_GRANTED")){
           landingGranted.setEnabled(true);
-        } else if (status.equalsIgnoreCase("AWAITING_TAKEOFF")){
-          takeOffGranted.setEnabled(true);
-        } else if (status.equalsIgnoreCase("LANDING")){
-          confirm.setEnabled(true);
-        } else if (status.equalsIgnoreCase("READY_DEPART")){
-          waitingForTaxi.setEnabled(true);
+        } else{
+            landingGranted.setEnabled(false);
         }
+         if (status.equalsIgnoreCase("AWAITING_TAKEOFF")){
+          takeOffGranted.setEnabled(true);
+        } else {
+            takeOffGranted.setEnabled(false);
+         }
+          if (status.equalsIgnoreCase("LANDING")){
+              confirm.setEnabled(true);
+          }else {
+              confirm.setEnabled(false);
+          }
+          if (status.equalsIgnoreCase("READY_DEPART")){
+              waitingForTaxi.setEnabled(true);
+          } else {
+              waitingForTaxi.setEnabled(false);
+          }
         flightInfo.setEnabled(true);
       }
     }
@@ -198,16 +210,13 @@ public class LATC extends JFrame implements Observer, ActionListener {
         }
 
         if (e.getSource() == flightInfo){
-          showFlightInfo();
+            int amountOfPassengers = aircraftManagementDatabase.getPassengerList(managementRecordIndex).getDetails().size();
+
+            JOptionPane.showMessageDialog(null, "Flight Code of Flight: " + aircraftManagementDatabase.getFlightCode(managementRecordIndex) +
+                    "\nFlight Status: " + aircraftManagementDatabase.getStatus(managementRecordIndex) + "\nComing From: " +
+                    aircraftManagementDatabase.getItinerary(managementRecordIndex).getFrom() + "\nGoing To: " + aircraftManagementDatabase.getItinerary(managementRecordIndex).getTo() +
+                    "\nNext Destination: " + aircraftManagementDatabase.getItinerary(managementRecordIndex).getNext() + "\nNumber of Passengers on board: " + amountOfPassengers);
         }
     }
 
-  private void showFlightInfo() {
-      int amountOfPassengers = aircraftManagementDatabase.getPassengerList(managementRecordIndex).getDetails().size();
-
-      JOptionPane.showMessageDialog(null, "Flight Code of Flight: " + aircraftManagementDatabase.getFlightCode(managementRecordIndex) +
-              "\nFlight Status: " + aircraftManagementDatabase.getStatus(managementRecordIndex) + "\nComing From: " +
-              aircraftManagementDatabase.getItinerary(managementRecordIndex).getFrom() + "\nGoing To: " + aircraftManagementDatabase.getItinerary(managementRecordIndex).getTo() +
-              "\nNext Destination: " + aircraftManagementDatabase.getItinerary(managementRecordIndex).getNext() + "\nNumber of Passengers on board: " + amountOfPassengers);
-  }
 }

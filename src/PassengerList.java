@@ -42,4 +42,8 @@ public class PassengerList {
   public void addPassenger(PassengerDetails details){
     this.details.add(details);
   }
+
+  public void passengersLeft() {
+    details = new ArrayList<>();
+  }
 }
