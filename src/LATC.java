@@ -132,16 +132,16 @@ public class LATC extends JFrame implements Observer, ActionListener {
         if (!aircrafts.getValueIsAdjusting()) {
             if (aircrafts.getSelectedValue() == null) {
                 managementRecordIndex = -1;
-                labelForFlightCodes.setText("UNKNOWN");
-                labelForFlightStatus.setText("UNKNOWN");
+                flightCodes.setText("UNKNOWN");
+                flightStatus.setText("UNKNOWN");
                 if (buttonAvailability) {
                     buttonAvailability = false;
                 }
                 updateButtons();
             } else {
                 managementRecordIndex = aircrafts.getSelectedIndex();
-                labelForFlightCodes.setText(aircraftManagementDatabase.getFlightCode(managementRecordIndex));
-                labelForFlightStatus.setText(aircraftManagementDatabase.getStatus(managementRecordIndex));
+                flightCodes.setText(aircraftManagementDatabase.getFlightCode(managementRecordIndex));
+                flightStatus.setText(aircraftManagementDatabase.getStatus(managementRecordIndex));
                 if (!buttonAvailability) {
                     buttonAvailability = true;
                 }

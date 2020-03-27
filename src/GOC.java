@@ -156,16 +156,16 @@ public class GOC extends JFrame implements ActionListener, Observer {
         if (!aircrafts.getValueIsAdjusting()) {
             if (aircrafts.getSelectedValue() == null) {
                 managementRecordIndex = -1;
-                labelForFlightCodes.setText("UNKNOWN");
-                labelForFlightStatus.setText("UNKNOWN");
+                flightCodes.setText("UNKNOWN");
+                flightStatus.setText("UNKNOWN");
                 if (buttonAvaliablity) {
                     buttonAvaliablity = false;
                 }
                 updateButtons();
             } else {
                 managementRecordIndex = aircrafts.getSelectedIndex();
-                labelForFlightCodes.setText(aircraftManagementDatabase.getFlightCode(managementRecordIndex));
-                labelForFlightStatus.setText(aircraftManagementDatabase.getStatus(managementRecordIndex));
+                flightCodes.setText(aircraftManagementDatabase.getFlightCode(managementRecordIndex));
+                flightStatus.setText(aircraftManagementDatabase.getStatus(managementRecordIndex));
                 if (!buttonAvaliablity) {
                     buttonAvaliablity = true;
                 }
