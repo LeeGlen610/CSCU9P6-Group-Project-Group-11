@@ -3,7 +3,6 @@
 
 
 import java.util.Observable;
-import java.util.Observer;
 
 /**
  * A central database ("model" class):
@@ -28,6 +27,7 @@ public class GateInfoDatabase extends Observable {
  * @supplierCardinality 0..*
  */
   private Gate[] gates;
+
 
   /**
    *  A constant: the number of aircraft gates at the airport.
@@ -66,6 +66,8 @@ public class GateInfoDatabase extends Observable {
  */
   public void allocate(int gateNumber, int mCode){
 	  gates[gateNumber].allocate(mCode);
+      setChanged();
+      notifyObservers();
   }
 
 /**
@@ -73,6 +75,8 @@ public class GateInfoDatabase extends Observable {
  */
   public void docked(int gateNumber){
 	  gates[gateNumber].docked();
+      setChanged();
+      notifyObservers();
   }
 
 /**
@@ -80,5 +84,11 @@ public class GateInfoDatabase extends Observable {
  */
   public void departed(int gateNumber){
 	  gates[gateNumber].departed();
+      setChanged();
+      notifyObservers();
+  }
+
+  public int assignedmCode(int gateNumber){
+      return gates[gateNumber].getmCode();
   }
 }

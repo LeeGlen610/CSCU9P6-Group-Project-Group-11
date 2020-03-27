@@ -42,4 +42,10 @@ public class PassengerList {
   public void addPassenger(PassengerDetails details){
     this.details.add(details);
   }
+
+  public void clearPassengers(){
+    for(int i = 0; i < details.size(); i++){
+      details.remove(i);
+    }
+  }
 }
