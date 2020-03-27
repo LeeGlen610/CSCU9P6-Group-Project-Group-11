@@ -35,7 +35,7 @@ public class AircraftManagementDatabase extends Observable {
      * Return the status of the MR with the given mCode supplied as a parameter.
      */
     public String getStatus(int mCode) {
-        return MRs[mCode].getStatus(mCode);
+        return MRs[mCode].getStatus(MRs[mCode].getStatus());
     }
 
     /**
@@ -163,6 +163,12 @@ public class AircraftManagementDatabase extends Observable {
      */
     public PassengerList getPassengerList(int mCode) {
         return MRs[mCode].getPassengerList();
+    }
+
+    public void clearPassengers(int mCode){
+        MRs[mCode].getPassengerList().passengersLeft();
+        setChanged();
+        notifyObservers();
     }
 
     /**

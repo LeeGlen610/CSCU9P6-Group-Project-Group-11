@@ -49,6 +49,10 @@ public class GateInfoDatabase extends Observable {
   }
 
 
+  public Gate getGate(int gateNumber){
+      return gates[gateNumber];
+  }
+
 /**
  * Returns an array containing the status of all gates.
  * For data collection by the GOC.

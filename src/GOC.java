@@ -56,7 +56,7 @@ public class GOC extends JFrame implements ActionListener, Observer {
     private JLabel firstGateCurrentStatus;
     private JLabel secondGateLabel;
     private JLabel secondGateCurrentStatus;
-    private JPanel listPanel = new JPanel();
+    private JPanel listPanel;
     private JButton okGroundClearance;
     private JButton allocateAGate;
     private JButton taxi;
@@ -98,15 +98,17 @@ public class GOC extends JFrame implements ActionListener, Observer {
 
         okGroundClearance = new JButton("Good For Ground Clearance");
         window.add(okGroundClearance);
-        okGroundClearance.addActionListener(this::actionPerformed);
+        okGroundClearance.addActionListener(this);
 
         allocateAGate = new JButton("Allocate A Gate To Flight");
         window.add(allocateAGate);
-        allocateAGate.addActionListener(this::actionPerformed);
+        allocateAGate.addActionListener(this);
 
         taxi = new JButton("Taxi Flight To Gate");
         window.add(taxi);
-        taxi.addActionListener(this::actionPerformed);
+        taxi.addActionListener(this);
+
+        listPanel = new JPanel();
 
         listModelOfManagement = new DefaultListModel<ManagementRecord>();
 
@@ -185,8 +187,14 @@ public class GOC extends JFrame implements ActionListener, Observer {
 
         if (status.equals("WAITING_TO_LAND")) {
             okGroundClearance.setEnabled(true);
-        } else if (status.equals("AWAITING_TAXI")) {
-            taxi.setEnabled(true);
+        } else {
+            okGroundClearance.setEnabled(false);
+        }
+
+        if (status.equals("AWAITING_TAXI")) {
+              taxi.setEnabled(true);
+        }else {
+            taxi.setEnabled(false);
         }
 
         int gateStatus[] = gateInfoDatabase.getStatuses();
@@ -199,6 +207,8 @@ public class GOC extends JFrame implements ActionListener, Observer {
         }
         if ((status.equals("LANDED")) && currentStatus == 0) {
             allocateAGate.setEnabled(true);
+        } else {
+            allocateAGate.setEnabled(false);
         }
       }
     }
