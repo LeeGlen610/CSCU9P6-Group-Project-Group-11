@@ -169,7 +169,7 @@ public class CleaningSupervisor extends JFrame
       } else {
         managementRecordIndex = aircrafts.getSelectedIndex();
         flightCodes.setText(aircraftManagementDatabase.getFlightCode(managementRecordIndex));
-        flightStatus.setText(aircraftManagementDatabase.getFlightStatus(managementRecordIndex));
+        flightStatus.setText(aircraftManagementDatabase.getStatus(managementRecordIndex));
         if (!buttonAvailability) {
           buttonAvailability = true;
         }
