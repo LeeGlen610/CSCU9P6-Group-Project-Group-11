@@ -6,6 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * An interface to SAAMS:
@@ -20,8 +22,8 @@ import java.awt.event.ActionListener;
  * @url element://model:project::SAAMS/design:view:::id15rnfcko4qme4cko4swib
  */
 public class CleaningSupervisor extends JFrame
-        implements ActionListener {
-  private final AircraftManagementDatabase aircraftManagementDatabase;
+        implements ActionListener, Observer {
+  private AircraftManagementDatabase aircraftManagementDatabase;
   /**
   * The Cleaning Supervisor Screen interface has access to the AircraftManagementDatabase.
   * @clientCardinality 1
@@ -35,6 +37,17 @@ public class CleaningSupervisor extends JFrame
 
   private JTextField displayCodes;
   private JTextField displayStatus;
+
+  private JPanel listPanel;
+  private JList<ManagementRecord> aircrafts;
+  private DefaultListModel<ManagementRecord> listModelOfManagement;
+  private JLabel flightStatus;
+  private JLabel labelForFlightStatus;
+  private JLabel flightCodes;
+  private JLabel labelForFlightCodes;
+  private JTextField display;
+  boolean buttonAvailability;
+  int managementRecordIndex;
 
 
   public CleaningSupervisor(AircraftManagementDatabase aircraftManagementDatabase) {
@@ -61,13 +74,16 @@ public class CleaningSupervisor extends JFrame
     window.add(doneCleaning);
     doneCleaning.addActionListener(this);
 
-    add(new JLabel("FLIGHT_CODES"));
-    displayCodes = new JTextField("", 15);
-    add(displayCodes);
 
-    add(new JLabel("FLIGHT_STATUS"));
-    displayStatus = new JTextField("", 15);
-    add(displayStatus);
+    labelForFlightCodes = new JLabel("Flight Code: ");
+    window.add(labelForFlightCodes);
+    flightCodes = new JLabel("");
+    window.add(flightCodes);
+
+    labelForFlightStatus = new JLabel("Flight Status: ");
+    window.add(labelForFlightCodes);
+    flightStatus = new JLabel("");
+    window.add(flightStatus);
 
     setVisible(true);
     show();
@@ -78,31 +94,33 @@ public class CleaningSupervisor extends JFrame
     aircrafts = new JList<>(listModelOfManagement);
     aircrafts.addListSelectionListener(e -> itemSelected());
     JScrollPane scroll = new JScrollPane(aircrafts);
-    scroll.setPrefferedSize(new Dimension(width:500, height:300));
-    scroll.setMinimumSize(new Dimension(width:500, height 300));
+    scroll.setPreferredSize(new Dimension(500, 300));
+    scroll.setMinimumSize(new Dimension(500, 300));
 
     listPanel.add(scroll);
-    listModeOfManegement.setSize(aircraftManagementDatabase.maxMRs);
+    listModelOfManagement.setSize(aircraftManagementDatabase.maxMRs);
   }
 
   private void updateButtons() {
+
     if (!buttonAvailability) {
       awaitMaintenance.setEnabled(false);
       awaitRepair.setEnabled(false);
       doneCleaning.setEnabled(false);
     } else {
+
       String status = aircraftManagementDatabase.getStatus(managementRecordIndex);
-      if (status.equalsIgnoreCase(anotherString:"READY_CLEAN_AND_MAINT")) {
+      if (status.equalsIgnoreCase("READY_CLEAN_AND_MAINT")) {
         awaitMaintenance.setEnabled(true);
       } else {
         awaitMaintenance.setEnabled(false);
       }
-      if (status.equalsIgnoreCase(anotherString:"AWAIT_REPAIR")) {
+      if (status.equalsIgnoreCase("AWAIT_REPAIR")) {
         awaitRepair.setEnabled(true);
       } else {
         awaitRepair.setEnabled(false);
       }
-      if (status.equalsIgnoreCase(anotherString:"OK_AWAIT_CLEAN")) {
+      if (status.equalsIgnoreCase("OK_AWAIT_CLEAN")) {
         doneCleaning.setEnabled(true);
       } else {
         doneCleaning.setEnabled(false);
@@ -129,17 +147,17 @@ public class CleaningSupervisor extends JFrame
       ManagementRecord managementRecord = aircraftManagementDatabase.getMR(i);
       if (managementRecord == null) {
         listModelOfManagement.set(i,null);
-      } else if ( managementRecord.getStatus(managementRecord.getStatus().equalsIgnoreCase(anotherString:"FAULTY_AWAIT_CLEAN")
-      ||  (managementRecord.getStatus(managementRecord.getStatus().equalsIgnoreCase(anotherString:"READY_CLEAN_AND_MAINT")
-      || (managementRecord.getStatus(managementRecord.getStatus().equalsIgnoreCase(anotherString:"CLEAN_AWAIT_MAINT")
-      || (managementRecord.getStatus(managementRecord.getStatus().equalsIgnoreCase(anotherString:"OK_AWAIT_CLEAN")
-      ||  (managementRecord.getStatus(managementRecord.getStatus().equalsIgnoreCase(anotherString:"AWAIT_REPAIR")) {
+      } else if ( managementRecord.getStatus(managementRecord.getStatus()).equalsIgnoreCase("FAULTY_AWAIT_CLEAN")
+      ||  managementRecord.getStatus(managementRecord.getStatus()).equalsIgnoreCase("READY_CLEAN_AND_MAINT")
+      || managementRecord.getStatus(managementRecord.getStatus()).equalsIgnoreCase("CLEAN_AWAIT_MAINT")
+      || managementRecord.getStatus(managementRecord.getStatus()).equalsIgnoreCase("OK_AWAIT_CLEAN")
+      ||  managementRecord.getStatus(managementRecord.getStatus()).equalsIgnoreCase("AWAIT_REPAIR")) {
         listModelOfManagement.set(i,managementRecord);
       }
     }
   }
   private void itemSelected() {
-    if (!aircrafts.getValueAdjusting()) {
+    if (!aircrafts.getValueIsAdjusting()) {
       if (aircrafts.getSelectedValue() == null) {
         managementRecordIndex = -1;
         flightCodes.setText("UNKNOWN");
@@ -163,18 +181,19 @@ public class CleaningSupervisor extends JFrame
   @Override
   public void actionPerformed(ActionEvent e) {
     if (e.getSource() == awaitMaintenance) {
-        aircraftManagementDatabase.setStatus(managementRecordIndex, newStatus:"OK_AWAIT_CLEAN");
+        aircraftManagementDatabase.setStatus(managementRecordIndex, Integer.parseInt("OK_AWAIT_CLEAN"));
     }
     else if (e.getSource() == awaitRepair) {
-      aircraftManagementDatabase.setStatus(managementRecordIndex, newStatus:"AWAIT_REPAIR");
+      aircraftManagementDatabase.setStatus(managementRecordIndex, Integer.parseInt("AWAIT_REPAIR"));
     }
     else if (e.getSource() == doneCleaning) {
-      aircraftManagementDatabase.setStatus(managementRecordIndex, newStatus:"READY_CLEAN_AND_MAINT");
+      aircraftManagementDatabase.setStatus(managementRecordIndex, Integer.parseInt("READY_CLEAN_AND_MAINT"));
     }
     }
+
+
   @Override
-  public void update(observable o, Object arg) {
-    displayCodes.setText("Flight Codes: " + flightCodes);
-    displayStatus.setText("Flight Status: " + flightStatus);
+  public void update(Observable o, Object arg) {
+    updateRecords();
   }
 }

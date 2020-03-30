@@ -6,6 +6,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.ObjectStreamException;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * An interface to SAAMS:
@@ -20,9 +23,9 @@ import java.awt.event.ActionListener;
  * @url element://model:project::SAAMS/design:view:::id3y5z3cko4qme4cko4sw81
  */
 public class RefuellingSupervisor extends JFrame
-        implements ActionListener {
+        implements ActionListener, Observer {
 
-  private final AircraftManagementDatabase aircraftManagementDatabase;
+  private AircraftManagementDatabase aircraftManagementDatabase;
 /**
   * The Refuelling Supervisor Screen interface has access to the AircraftManagementDatabase.
   * @supplierCardinality 1
@@ -34,6 +37,17 @@ public class RefuellingSupervisor extends JFrame
 
   private JTextField displayCodes;
   private JTextField displayStatus;
+
+  private JPanel listPanel;
+  private JList<ManagementRecord> aircrafts;
+  private DefaultListModel<ManagementRecord> listModelOfManagement;
+  private JLabel flightStatus;
+  private JLabel labelForFlightStatus;
+  private JLabel flightCodes;
+  private JLabel labelForFlightCodes;
+  private JTextField display;
+  boolean buttonAvailability;
+  int managementRecordIndex;
 
   public RefuellingSupervisor(AircraftManagementDatabase aircraftManagementDatabase) {
     this.aircraftManagementDatabase = aircraftManagementDatabase;
@@ -66,18 +80,18 @@ public class RefuellingSupervisor extends JFrame
     aircrafts = new JList<>(listModelOfManagement);
     aircrafts.addListSelectionListener(e -> itemSelected());
     JScrollPane scroll = new JScrollPane(aircrafts);
-    scroll.setPrefferedSize(new Dimension(width:500, height:300));
-    scroll.setMinimumSize(new Dimension(width:500, height 300));
+    scroll.setPreferredSize(new Dimension(500, 300));
+    scroll.setMinimumSize(new Dimension(500,  300));
 
     listPanel.add(scroll);
-    listModeOfManegement.setSize(aircraftManagementDatabase.maxMRs);
+    listModelOfManagement.setSize(aircraftManagementDatabase.maxMRs);
   }
   private void updateButtons() {
     if (!buttonAvailability) {
       awaitRefuelling.setEnabled(false);
     } else {
       String status = aircraftManagementDatabase.getStatus(managementRecordIndex);
-      if (status.equalsIgnoreCase(anotherString:"READY_REFUEL")){
+      if (status.equalsIgnoreCase("READY_REFUEL")){
         awaitRefuelling.setEnabled(true);
       } else{
         awaitRefuelling.setEnabled(false);
@@ -90,14 +104,14 @@ public class RefuellingSupervisor extends JFrame
       ManagementRecord managementRecord = aircraftManagementDatabase.getMR(i);
       if (managementRecord == null) {
         listModelOfManagement.set(i,null);
-      } else if ( managementRecord.getStatus(managementRecord.getStatus().equalsIgnoreCase(anotherString:"READY_REFUEL") {
+      } else if ( managementRecord.getStatus(managementRecord.getStatus()).equalsIgnoreCase("READY_REFUEL")) {
         listModelOfManagement.set(i,managementRecord);
       }
     }
   }
 
   private void itemSelected() {
-    if (!aircrafts.getValueAdjusting()) {
+    if (!aircrafts.getValueIsAdjusting()) {
       if (aircrafts.getSelectedValue() == null) {
         managementRecordIndex = -1;
         flightCodes.setText("UNKNOWN");
@@ -121,14 +135,12 @@ public class RefuellingSupervisor extends JFrame
   @Override
   public void actionPerformed(ActionEvent e) {
     if (e.getSource() == awaitRefuelling) {
-      aircraftManagementDatabase.setStatus(managementRecordIndex, newStatus:"READY_REFUEL");
+      aircraftManagementDatabase.setStatus(managementRecordIndex, Integer.parseInt("READY_REFUEL"));
     }
   }
 
   @Override
-  public void update(observable o, Object arg) {
-    displayCodes.setText("Flight Codes: " + flightCodes);
-    displayStatus.setText("Flight Status: " + flightStatus);
-
+  public void update(Observable o, Object arg) {
+    updateRecords();
   }
 }
