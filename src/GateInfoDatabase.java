@@ -92,6 +92,12 @@ public class GateInfoDatabase extends Observable {
       notifyObservers();
   }
 
+    /**
+     * Returns the assigned mCode for the assigned management record.
+     *
+     * @param gateNumber The gate number
+     * @return //The mCode of the assigned management record
+     */
   public int assignedmCode(int gateNumber){
       return gates[gateNumber].getmCode();
   }

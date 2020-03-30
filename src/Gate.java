@@ -60,6 +60,10 @@ public class Gate {
  *  If the gate is reserved or occupied, the mCode of the MR of the aircraft which is expected/present.*/
   private int mCode;
 
+    /**
+     * Returns the assigned management record mCode.
+     * @return Assigned mCode
+     */
   public int getmCode(){
       return mCode;
   }

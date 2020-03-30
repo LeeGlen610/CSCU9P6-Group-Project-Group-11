@@ -45,9 +45,10 @@ public class GateConsole extends JFrame implements Observer, ActionListener {
  */
   private int gateNumber;
 
-  private int assignedManagementRecordIndex;
-  private ManagementRecord assignedMR;
+  private int assignedManagementRecordIndex; // assigned management index number
+  private ManagementRecord assignedMR; // assigned management record
 
+  //Button and labels
   private JButton buttonDocked;
   private JButton buttonDisembarked;
   private JButton buttonAddPassenger;
@@ -69,7 +70,7 @@ public class GateConsole extends JFrame implements Observer, ActionListener {
     this.gateNumber = gateNumber;
 
 
-    setTitle("Gate Console View");
+    setTitle("Gate Console View for Gate " + gateNumber);
     setLocation(500, 500);
     setSize(700, 400);
     Container window = getContentPane();
@@ -107,7 +108,6 @@ public class GateConsole extends JFrame implements Observer, ActionListener {
     window.add(buttonShowPassengers);
 
 
-
     listModelOfManagement = new DefaultListModel<ManagementRecord>();
 
     aircrafts = new JList<>(listModelOfManagement);
@@ -131,18 +131,28 @@ public class GateConsole extends JFrame implements Observer, ActionListener {
     aircraftManagementDatabase.addObserver(this);
   }
 
+  /**
+   * Updates the labels on the gate console.
+   */
   private void updateLabels() {
-    int statusOfGate = gateInfoDatabase.getStatus(gateNumber);
-    gateStatus.setText(statusOfGate(statusOfGate));
+    int statusOfGate = gateInfoDatabase.getStatus(gateNumber); //status number of gate
+    gateStatus.setText(statusOfGate(statusOfGate)); //sets the text of the lebel for gate status
 
+    //if the gate is not free
     if(gateInfoDatabase.getStatus(gateNumber) != 0){
-      assignedManagementRecordIndex = gateInfoDatabase.assignedmCode(gateNumber);
-      assignedMR = aircraftManagementDatabase.getMR(assignedManagementRecordIndex);
-      flightCode.setText(assignedMR.getFlightCode());
-      flightStatus.setText(String.valueOf(assignedMR.getStatus(assignedManagementRecordIndex)));
-    }
+      assignedManagementRecordIndex = gateInfoDatabase.assignedmCode(gateNumber); //get assigned management record mCode
+      assignedMR = aircraftManagementDatabase.getMR(assignedManagementRecordIndex); //get assigned management record
+      flightCode.setText(assignedMR.getFlightCode()); //sets text of flight code label
+      flightStatus.setText(String.valueOf(assignedMR.getStatus(assignedManagementRecordIndex))); //sets text of flight status label
+    } //end if
   }
 
+  /**
+   * Returns the status of the gate as a text
+   *
+   * @param status Status number
+   * @return Status as text
+   */
   private String statusOfGate(int status){
     switch (status){
       case 0:
@@ -156,6 +166,9 @@ public class GateConsole extends JFrame implements Observer, ActionListener {
     }
   }
 
+  /**
+   * Adds the assigned management record to the JList
+   */
   private void updateRecords() {
       if (assignedMR == null) {
         listModelOfManagement.set(0, null);
@@ -175,25 +188,28 @@ public class GateConsole extends JFrame implements Observer, ActionListener {
     if(e.getSource() == buttonDocked) {
       aircraftManagementDatabase.setStatus(assignedManagementRecordIndex, 7);
       gateInfoDatabase.docked(gateNumber);
-    }
+    } //end if
 
     if(e.getSource() == buttonDisembarked){
       PassengerList list = aircraftManagementDatabase.getPassengerList(assignedManagementRecordIndex);
       list.passengersLeft();
       aircraftManagementDatabase.setStatus(assignedManagementRecordIndex, 8);
-    }
+    } //end if
 
     if(e.getSource() == buttonAddPassenger){
       PassengerDetails passengerName = new PassengerDetails(showTextPrompt("Passenger Name"));
       aircraftManagementDatabase.addPassenger(assignedManagementRecordIndex, passengerName);
-    }
+    } //end if
 
     if (e.getSource() == buttonBoardingComplete){
       aircraftManagementDatabase.setStatus(assignedManagementRecordIndex, 15);
       updateLabels();
-    }
+    } //end if
   }
 
+  /**
+   * Displays a text prompt for the user to enter text
+   */
   public String showTextPrompt(String title) {
     return JOptionPane.showInputDialog(
             this,
