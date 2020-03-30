@@ -33,6 +33,9 @@ public class CleaningSupervisor extends JFrame
   private JButton awaitRepair;
   private JButton doneCleaning;
 
+  private JTextField displayCodes;
+  private JTextField displayStatus;
+
 
   public CleaningSupervisor(AircraftManagementDatabase aircraftManagementDatabase) {
     this.aircraftManagementDatabase = aircraftManagementDatabase;
@@ -42,46 +45,136 @@ public class CleaningSupervisor extends JFrame
     Container window = getContentPane();
     window.setLayout(new FlowLayout());
 
-    // update button
+    // maintenance button
     awaitMaintenance = new JButton("Await Maintenance");
     window.add(awaitMaintenance);
-      awaitMaintenance.addActionListener(this);
+    awaitMaintenance.addActionListener(this);
 
 
-    // show status button
+    // waiting for repair button
     awaitRepair = new JButton("Await Repair");
     window.add(awaitRepair);
-      awaitRepair.addActionListener(this);
+    awaitRepair.addActionListener(this);
 
-    //quit button
+    //done cleaning button
     doneCleaning = new JButton("Done Cleaning");
     window.add(doneCleaning);
     doneCleaning.addActionListener(this);
 
-      add(new JLabel("cleaning supervisor view"));
-      display = new JTextField("", 15);
-      add(display);
+    add(new JLabel("FLIGHT_CODES"));
+    displayCodes = new JTextField("", 15);
+    add(displayCodes);
+
+    add(new JLabel("FLIGHT_STATUS"));
+    displayStatus = new JTextField("", 15);
+    add(displayStatus);
 
     setVisible(true);
     show();
+
+    //new list of aircrafts that need cleaning/repairs
+    listPanel = new JPanel();
+    listModelOfManagement = new DefaultListModel<>();
+    aircrafts = new JList<>(listModelOfManagement);
+    aircrafts.addListSelectionListener(e -> itemSelected());
+    JScrollPane scroll = new JScrollPane(aircrafts);
+    scroll.setPrefferedSize(new Dimension(width:500, height:300));
+    scroll.setMinimumSize(new Dimension(width:500, height 300));
+
+    listPanel.add(scroll);
+    listModeOfManegement.setSize(aircraftManagementDatabase.maxMRs);
+  }
+
+  private void updateButtons() {
+    if (!buttonAvailability) {
+      awaitMaintenance.setEnabled(false);
+      awaitRepair.setEnabled(false);
+      doneCleaning.setEnabled(false);
+    } else {
+      String status = aircraftManagementDatabase.getStatus(managementRecordIndex);
+      if (status.equalsIgnoreCase(anotherString:"READY_CLEAN_AND_MAINT")) {
+        awaitMaintenance.setEnabled(true);
+      } else {
+        awaitMaintenance.setEnabled(false);
+      }
+      if (status.equalsIgnoreCase(anotherString:"AWAIT_REPAIR")) {
+        awaitRepair.setEnabled(true);
+      } else {
+        awaitRepair.setEnabled(false);
+      }
+      if (status.equalsIgnoreCase(anotherString:"OK_AWAIT_CLEAN")) {
+        doneCleaning.setEnabled(true);
+      } else {
+        doneCleaning.setEnabled(false);
+      }
+//      if (status.equalsIgnoreCase(anotherString:"FAULTY_AWAIT_CLEAN")) {
+//        awaitMaintenance.setEnabled(true);
+//        awaitRepair.setEnabled(true);
+//      } else {
+//        awaitMaintenance.setEnabled(false);
+//        awaitRepair.setEnabled(false);
+//      }
+//      if (status.equalsIgnoreCase(anotherString:"CLEAN_AWAIT_MAINT")) {
+//        awaitMaintenance.setEnabled(true);
+//        doneCleaning.setEnabled(true);
+//      } else {
+//        awaitMaintenance.setEnabled(false);
+//        doneCleaning.setEnabled(false);
+//      }
+      }
+  }
+
+  private void updateRecords() {
+    for (int i=0; i<aircraftManagementDatabase.maxMRs; i++) {
+      ManagementRecord managementRecord = aircraftManagementDatabase.getMR(i);
+      if (managementRecord == null) {
+        listModelOfManagement.set(i,null);
+      } else if ( managementRecord.getStatus(managementRecord.getStatus().equalsIgnoreCase(anotherString:"FAULTY_AWAIT_CLEAN")
+      ||  (managementRecord.getStatus(managementRecord.getStatus().equalsIgnoreCase(anotherString:"READY_CLEAN_AND_MAINT")
+      || (managementRecord.getStatus(managementRecord.getStatus().equalsIgnoreCase(anotherString:"CLEAN_AWAIT_MAINT")
+      || (managementRecord.getStatus(managementRecord.getStatus().equalsIgnoreCase(anotherString:"OK_AWAIT_CLEAN")
+      ||  (managementRecord.getStatus(managementRecord.getStatus().equalsIgnoreCase(anotherString:"AWAIT_REPAIR")) {
+        listModelOfManagement.set(i,managementRecord);
+      }
+    }
+  }
+  private void itemSelected() {
+    if (!aircrafts.getValueAdjusting()) {
+      if (aircrafts.getSelectedValue() == null) {
+        managementRecordIndex = -1;
+        flightCodes.setText("UNKNOWN");
+        flightStatus.setText("UNKNOWN");
+      if (buttonAvailability) {
+      buttonAvailability = false;
+      }
+      updateButtons();
+      } else {
+        managementRecordIndex = aircrafts.getSelectedIndex();
+        flightCodes.setText(aircraftManagementDatabase.getFlightCode(managementRecordIndex));
+        flightStatus.setText(aircraftManagementDatabase.getFlightStatus(managementRecordIndex));
+        if (!buttonAvailability) {
+          buttonAvailability = true;
+        }
+        updateButtons();
+      }
+    }
   }
 
   @Override
   public void actionPerformed(ActionEvent e) {
     if (e.getSource() == awaitMaintenance) {
-         //managementRecord.getStatus();
-        //managementRecord.getFlightCode();
-        display.setText(ManagementRecord.getStatus());
-        display.setText(ManagementRecord.getFlightCode());
+        aircraftManagementDatabase.setStatus(managementRecordIndex, newStatus:"OK_AWAIT_CLEAN");
     }
     else if (e.getSource() == awaitRepair) {
-        //managementRecord.getStatus();
-        //managementRecord.getFlightCode();
-        display.setText(ManagementRecord.getStatus());
-        display.setText(ManagementRecord.getFlightCode());
+      aircraftManagementDatabase.setStatus(managementRecordIndex, newStatus:"AWAIT_REPAIR");
     }
-    else if (e.getSource() != doneCleaning) {
-
+    else if (e.getSource() == doneCleaning) {
+      aircraftManagementDatabase.setStatus(managementRecordIndex, newStatus:"READY_CLEAN_AND_MAINT");
     }
     }
+  @Override
+  public void update(observable o, Object arg) {
+    displayCodes.setText("Flight Codes: " + flightCodes);
+    displayStatus.setText("Flight Status: " + flightStatus);
+  }
 }

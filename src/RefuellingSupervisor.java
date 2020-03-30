@@ -31,11 +31,12 @@ public class RefuellingSupervisor extends JFrame
   * @directed*/
  // private AircraftManagementDatabase lnkUnnamed;
   private JButton awaitRefuelling;
-  private JButton doneRefuelling;
+
+  private JTextField displayCodes;
+  private JTextField displayStatus;
 
   public RefuellingSupervisor(AircraftManagementDatabase aircraftManagementDatabase) {
     this.aircraftManagementDatabase = aircraftManagementDatabase;
-
 
     setSize(350,150);
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -47,32 +48,87 @@ public class RefuellingSupervisor extends JFrame
     window.add(awaitRefuelling);
     awaitRefuelling.addActionListener(this);
 
+    add(new JLabel("FLIGHT_CODES"));
+    displayCodes = new JTextField("", 15);
+    add(displayCodes);
 
-    // show status button
-    doneRefuelling = new JButton("Done Refuelling");
-    window.add(doneRefuelling);
-    doneRefuelling.addActionListener(this);
+    add(new JLabel("FLIGHT_STATUS"));
+    displayStatus = new JTextField("", 15);
+    add(displayStatus);
 
-
-    add(new JLabel("Refuelling supervisor view"));
-    display = new JTextField("", 15);
-    add(display);
     setVisible(true);
+    show();
+
+
+    //new list of aircrafts that need refuelling
+    listPanel = new JPanel();
+    listModelOfManagement = new DefaultListModel<>();
+    aircrafts = new JList<>(listModelOfManagement);
+    aircrafts.addListSelectionListener(e -> itemSelected());
+    JScrollPane scroll = new JScrollPane(aircrafts);
+    scroll.setPrefferedSize(new Dimension(width:500, height:300));
+    scroll.setMinimumSize(new Dimension(width:500, height 300));
+
+    listPanel.add(scroll);
+    listModeOfManegement.setSize(aircraftManagementDatabase.maxMRs);
+  }
+  private void updateButtons() {
+    if (!buttonAvailability) {
+      awaitRefuelling.setEnabled(false);
+    } else {
+      String status = aircraftManagementDatabase.getStatus(managementRecordIndex);
+      if (status.equalsIgnoreCase(anotherString:"READY_REFUEL")){
+        awaitRefuelling.setEnabled(true);
+      } else{
+        awaitRefuelling.setEnabled(false);
+      }
+    }
   }
 
+  private void updateRecords() {
+    for (int i=0; i<aircraftManagementDatabase.maxMRs; i++) {
+      ManagementRecord managementRecord = aircraftManagementDatabase.getMR(i);
+      if (managementRecord == null) {
+        listModelOfManagement.set(i,null);
+      } else if ( managementRecord.getStatus(managementRecord.getStatus().equalsIgnoreCase(anotherString:"READY_REFUEL") {
+        listModelOfManagement.set(i,managementRecord);
+      }
+    }
+  }
+
+  private void itemSelected() {
+    if (!aircrafts.getValueAdjusting()) {
+      if (aircrafts.getSelectedValue() == null) {
+        managementRecordIndex = -1;
+        flightCodes.setText("UNKNOWN");
+        flightStatus.setText("UNKNOWN");
+        if (buttonAvailability) {
+          buttonAvailability = false;
+        }
+        updateButtons();
+      } else {
+        managementRecordIndex = aircrafts.getSelectedIndex();
+        flightCodes.setText(aircraftManagementDatabase.getFlightCode(managementRecordIndex));
+        flightStatus.setText(aircraftManagementDatabase.getFlightStatus(managementRecordIndex));
+        if (!buttonAvailability) {
+          buttonAvailability = true;
+        }
+        updateButtons();
+      }
+    }
+  }
 
   @Override
   public void actionPerformed(ActionEvent e) {
+    if (e.getSource() == awaitRefuelling) {
+      aircraftManagementDatabase.setStatus(managementRecordIndex, newStatus:"READY_REFUEL");
+    }
+  }
 
-      if (e.getSource() == awaitRefuelling) {
-        //managementRecord.getStatus();
-        //managementRecord.getFlightCode();
-        display.setText(ManagementRecord.getStatus());
-        display.setText(ManagementRecord.getFlightCode());
-      }
+  @Override
+  public void update(observable o, Object arg) {
+    displayCodes.setText("Flight Codes: " + flightCodes);
+    displayStatus.setText("Flight Status: " + flightStatus);
 
-       else if (e.getSource() == doneRefuelling) {
-
-       }
   }
 }
