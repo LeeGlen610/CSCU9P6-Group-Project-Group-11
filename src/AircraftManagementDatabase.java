@@ -27,16 +27,22 @@ import java.util.Observable;
  */
 public class AircraftManagementDatabase extends Observable {
 
+    /**
+     * Constructor for AircraftManagementDatabase.
+     */
     public AircraftManagementDatabase() {
         MRs = new ManagementRecord[maxMRs];
-    }
+    }//END CONSTRUCTOR AircraftManagementDatabase
 
     /**
      * Return the status of the MR with the given mCode supplied as a parameter.
+     *
+     * @param mCode The MR's Index.
+     * @return The Status of The MR.
      */
     public String getStatus(int mCode) {
         return MRs[mCode].getStatus(MRs[mCode].getStatus());
-    }
+    }//END METHOD getStatus
 
     /**
      * The array of ManagementRecords. Attribute maxMRs specifies how large this array should be.
@@ -60,26 +66,34 @@ public class AircraftManagementDatabase extends Observable {
 
     /**
      * Forward a status change request to the MR given by the mCode supplied as a parameter. Parameter newStatus is the requested new status. No effect is expected if the current status is not a valid preceding status. This operation is appropriate when the status change does not need any additional information to be noted. It is present instead of a large collection of public operations for requesting specific status changes.
+     *
+     * @param mCode     The MR's Index.
+     * @param newStatus The New Status Being Assigned to The MR.
      */
     public void setStatus(int mCode, int newStatus) {
         MRs[mCode].setStatus(newStatus);
         setChanged();
         notifyObservers();
-
-    }
+    } //END METHOD setStatus
 
     /**
      * Return the flight code from the given MR supplied as a parameter.
      * The request is forwarded to the MR.
+     * @param mCode The MR's Index.
+     * @return The Flight Code of The Flight.
      */
     public String getFlightCode(int mCode) {
         return MRs[mCode].getFlightCode();
-    }
+    } //END METHOD getFlightCode
 
     /**
      * Returns an array of mCodes:
      * Just the mCodes of those MRs with the given status supplied as a parameter.
      * Principally for call by the various interface screens.
+     *
+     * @param statusCode The Status to Search For.
+     * @return The MR's With The Same Status.
+     * @throws NullPointerException If The MR Array isn't Initialised.
      */
     public int[] getWithStatus(int statusCode) throws NullPointerException {
         int[] mCodesStatus = new int[maxMRs];
@@ -88,19 +102,27 @@ public class AircraftManagementDatabase extends Observable {
             if (MRs[i].getStatus() == statusCode) {
                 mCodesStatus[counter] = i;
                 counter++;
-            }
-        }
+            }//END IF
+        }//END FOR
         return mCodesStatus;
-    }
+    }//END METHOD getWithStatus
 
+    /**
+     * Returns A MR Based of an Identifier.
+     *
+     * @param recordIdentifier The Index of an MR.
+     * @return The Management Record That's Been Requested.
+     */
     public ManagementRecord getMR(int recordIdentifier) {
         return MRs[recordIdentifier];
-    }
+    } //END METHOD getMR
 
     /**
      * The radar has detected a new aircraft, and has obtained flight descriptor fd from it.
      * <p>
      * This operation finds a currently FREE MR and forwards the radarDetect request to it for recording.
+     *
+     * @param fd The Flight That Has Been Detected.
      */
     public void radarDetect(FlightDescriptor fd) {
         int freeMR = 0;
@@ -110,72 +132,98 @@ public class AircraftManagementDatabase extends Observable {
                 break;
             }
         }
-
         MRs[freeMR] = new ManagementRecord();
         MRs[freeMR].setStatus(0);
         MRs[freeMR].radarDetect(fd);
         setChanged();
         notifyObservers();
-    }
+    } //END METHOD radarDetect
 
     /**
      * The aircraft in the MR given by mCode supplied as a parameter has departed from the local airspace. The message is forwarded to the MR, which can then delete/archive its contents and become FREE.
+     *
+     * @param mCode The MR's Index.
      */
     public void radarLostContact(int mCode) {
-        MRs[mCode].radarLostContact();
+        MRs[mCode] = null;
         setChanged();
         notifyObservers();
-    }
+    } //END METHOD radarLostContact.
 
     /**
      * A GOC has allocated the given gate to the aircraft with the given mCode supplied as a parameter for unloading passengers. The message is forwarded to the given MR for status update.
+     *
+     * @param mCode      The MR's Index.
+     * @param gateNumber The Gate Number That The Aircraft Has Been Assigned To.
      */
     public void taxiTo(int mCode, int gateNumber) {
         MRs[mCode].taxiTo(gateNumber);
         setChanged();
         notifyObservers();
-    }
+    } //END METHOD radarLostContact.
 
+    /**
+     * Returns the gate number assigned to a MR.
+     *
+     * @param mCode The MR's Index.
+     * @return The Gate Number.
+     */
     public int getGateNumber(int mCode) {
         return MRs[mCode].getGateNumber();
-    }
+    } //END METHOD getGateNumber
 
     /**
      * The Maintenance Supervisor has reported faults with the given description in the aircraft with the given mCode. The message is forwarded to the given MR for status update.
+     *
+     * @param mCode       The MR's Index.
+     * @param description The Description of The Fault.
      */
     public void faultsFound(int mCode, String description) {
         MRs[mCode].faultsFound(description);
         setChanged();
         notifyObservers();
-    }
+    } //END METHOD faultsFound
 
     /**
      * The given passenger is boarding the aircraft with the given mCode. Forward the message to the given MR for recording in the passenger list.
+     *
+     * @param mCode   The MR's Index.
+     * @param details The Passenger's Details.
      */
     public void addPassenger(int mCode, PassengerDetails details) {
         MRs[mCode].addPassenger(details);
         setChanged();
         notifyObservers();
-    }
+    }//END METHOD addPassenger
 
     /**
      * Return the PassengerList of the aircraft with the given mCode.
+     *
+     * @param mCode The MR's Index.
+     * @return The Passengers Of The MR.
      */
     public PassengerList getPassengerList(int mCode) {
         return MRs[mCode].getPassengerList();
-    }
+    }//END METHOD getPassengerList
 
-    public void clearPassengers(int mCode){
+    /**
+     * Clears the passengers from the Management Record.
+     *
+     * @param mCode The MR's Index.
+     */
+    public void clearPassengers(int mCode) {
         MRs[mCode].getPassengerList().passengersLeft();
         setChanged();
         notifyObservers();
-    }
+    } //END METHOD clearPassenger
 
     /**
      * Return the Itinerary of the aircraft with the given mCode.
+     * @param mCode The MR's Index.
+     * @return The Itinerary of The Flight.
      */
     public Itinerary getItinerary(int mCode) {
         return MRs[mCode].getItinerary();
-    }
+    } //END METHOD getItinerary
 
-}
+} //END CLASS AircraftManagementDatabase

@@ -16,10 +16,11 @@ public class Gate {
 
   /**
    *  Return the status code for this gate.
+   * @return The Status of Gate.
    */
   public int getStatus(){
 	  return status;
-  }
+  } //END METHOD getStatus
 
 /**
  *  The gate has been allocated to the given aircraft, identified by mCode: Change status from FREE to RESERVED and note the mCode.
@@ -28,8 +29,8 @@ public class Gate {
 	  if(status == FREE) {
 		  status = RESERVED;
 		  this.mCode = mCode;
-	  }
-  }
+	  }//END IF
+  }//END METHOD allocate
 
 /**
  *  Change gate status from RESERVED to OCCUPIED to indicate that aircraft has now docked.
@@ -37,8 +38,8 @@ public class Gate {
   public void docked(){
 	  if(status == RESERVED) {
 		  status = OCCUPIED;
-	  }
-  }
+	  }//END IF
+  } //END METHOD docked
 
 /**
  *  Status code representing the situation when the gate is currently allocated to no aircraft.*/
@@ -64,16 +65,16 @@ public class Gate {
      * Returns the assigned management record mCode.
      * @return Assigned mCode
      */
-  public int getmCode(){
-      return mCode;
-  }
+    public int getmCode(){
+        return mCode;
+    }//END METHOD getmCode
 
-/**
- *  Change status from OCCUPIED to FREE as the docked aircraft has now departed.
-  * @preconditions Status must be Occupied*/
-  public void departed(){
-	  if(status == OCCUPIED) {
-		  status = FREE;
-	  }
-  }
+    /**
+     *  Change status from OCCUPIED to FREE as the docked aircraft has now departed.
+     * @preconditions Status must be Occupied*/
+    public void departed(){
+        if(status == OCCUPIED) {
+            status = FREE;
+        }//END IF
+    }//END METHOD departed
 }

@@ -213,21 +213,30 @@ public class ManagementRecord {
      * This is a general purpose state change request where no special details accompany the state change.
      * [Special status changers are, for example, "taxiTo", where a gate number is supplied.]
      *
+     * @param newStatus The Status To Be Changed To.
      * @preconditions Valid transition requested
      */
     public void setStatus(int newStatus) {
         status = newStatus;
-    }
+    } // END METHOD setStatus
 
     /**
      * Return the status code of this MR.
+     * @return The Status code.
      */
     public int getStatus() {
         return status;
-    }
+    }// END METHOD getStatus
 
-    public String getStatus(int mCode) {
-        switch (mCode) {
+
+    /**
+     * Returns the status text of the MR.
+     *
+     * @param status The Current Status of The MR.
+     * @return The status based of the Management Record's status code.
+     */
+    public String getStatus(int status) {
+        switch (status) {
             case 0:
                 return "FREE";
             case 1:
@@ -268,21 +277,23 @@ public class ManagementRecord {
                 return "DEPARTING_THROUGH_LOCAL_AIRSPACE";
             default:
                 return "UNKNOWN";
-        }
-    }
+        }//END SWITCH
+    }//END METHOD getStatus
 
     /**
      * Return the flight code of this MR.
+     * @return The Flight Code.
      */
     public String getFlightCode() {
         return flightCode;
-    }
+    }//END METHOD getFlightCode
 
     /**
      * Sets up the MR with details of newly detected flight
      * <p>
      * Status must be FREE now, and becomes either IN_TRANSIT or WANTING_TO_LAND depending on the details in the flight descriptor.
      *
+     * @param fd The Flight That Has Been Detected.
      * @preconditions Status is FREE
      */
     public void radarDetect(FlightDescriptor fd) {
@@ -294,13 +305,18 @@ public class ManagementRecord {
                 status = 2;
             } else {
                 status = 1;
-            }
-        }
-    }
+            }//END IF/ELSE
+        }//END IF
+    }//END METHOD radarDetect
 
-    public int getGateNumber(){
+    /**
+     * Returns The Gate Number Assigned To The Management Record.
+     *
+     * @return The Gate Number
+     */
+    public int getGateNumber() {
         return gateNumber;
-    }
+    }//END METHOD getGateNumber
 
     /**
      * This aircraft has departed from local airspace.
@@ -317,22 +333,23 @@ public class ManagementRecord {
             faultDescription = "";
             itinerary = null;
             gateNumber = 0;
-        }
-    }
+        }//END IF
+    }// END METHOD radarLostContact
 
     /**
      * GOC has allocated the given gate for unloading passengers.
      * <p>
      * The gate number is recorded.The status must have been LANDED and becomes TAXIING.
      *
+     * @param gateNumber The Gate Number To Taxi To.
      * @preconditions Status is LANDED
      */
     public void taxiTo(int gateNumber) {
         if (status == 5) {
             status = 6;
             this.gateNumber = gateNumber;
-        }
-    }
+        } //END METHOD taxiTo
+    }//END METHOD taxiTo
 
     /**
      * The Maintenance Supervisor has reported faults.
@@ -341,6 +358,7 @@ public class ManagementRecord {
      * <p>
      * The status must have been READY_FOR_CLEAN_MAINT or CLEAN_AWAIT_MAINT and becomes FAULTY_AWAIT_CLEAN or AWAIT_REPAIR respectively.
      *
+     * @param description The Fault That Has Been Found.
      * @preconditions Status is READY_FOR_CLEAN_MAINT or CLEAN_AWAIT_MAINT
      */
     public void faultsFound(String description) {
@@ -350,8 +368,8 @@ public class ManagementRecord {
         } else if (status == 10) {
             status = 12;
             this.faultDescription = description;
-        }
-    }
+        }//END IF/ELSE
+    }//END METHOD faultsFound
 
     /**
      * The given passenger is boarding this aircraft.
@@ -360,32 +378,42 @@ public class ManagementRecord {
      * <p>
      * For this operation to be applicable, the status must be READY_PASSENGERS, and it doesn't change.
      *
+     * @param details The Passenger Details.
      * @preconditions Status is READY_PASSENGERS
      */
     public void addPassenger(PassengerDetails details) {
         passengerList.addPassenger(details);
-    }
+    } // END METHOD addPassenger
 
     /**
      * Return the entire current PassengerList.
+     * @return The Passenger List.
      */
     public PassengerList getPassengerList() {
         return passengerList;
-    }
+    } //END METHOD getPassengerList
 
     /**
      * Return the aircraft's Itinerary.
+     * @return THe Aircraft's Itinerary.
      */
     public Itinerary getItinerary() {
         return itinerary;
-    }
+    }//END METHOD getItinerary
 
+
+    /**
+     * Returns where the plane came from, where it's landing
+     * and depending on if the airplane will be going to another destination where it will go next.
+     *
+     * @return The plane destination information.
+     */
     @Override
     public String toString() {
-        if (!(itinerary.getNext() ==null)) {
+        if (!(itinerary.getNext() == null)) {
             return flightCode + " - From: " + itinerary.getFrom() + " Landing At: " + itinerary.getTo() + " Next Stop: " + itinerary.getNext();
         } else {
             return flightCode + " - From: " + itinerary.getFrom() + " Landing At: " + itinerary.getTo();
-        }
-        }
-}
+        } //END IF/ELSE
+    } //END METHOD toString
+} //END CLASS ManagementRecord
