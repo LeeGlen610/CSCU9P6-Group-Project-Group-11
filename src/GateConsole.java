@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -45,8 +46,15 @@ public class GateConsole extends JFrame implements Observer, ActionListener {
  */
   private int gateNumber;
 
-  private int managementRecordIndex = -1; // management index number
-  private ManagementRecord assignedMR; // assigned management record
+  /**
+   * Index number of the assigned management record
+   */
+  private int managementRecordIndex = -1;
+
+  /**
+   * Assigned management record
+   */
+  private ManagementRecord assignedMR;
 
 
   private JButton buttonDocked;
@@ -152,28 +160,29 @@ public class GateConsole extends JFrame implements Observer, ActionListener {
   }
 
   /**
-   * changes index
+   * Show flight information for flight selected in list
    */
   private void itemSelected() {
     if (!aircrafts.getValueIsAdjusting()) {
       if (aircrafts.getSelectedValue() == null) {
-        //managementRecordIndex = -1;
         flightCode.setText("UNKNOWN");
         flightStatus.setText("UNKNOWN");
         updateGateStatusLabel();
         showButtons(false);
       } else {
-        //managementRecordIndex = aircrafts.getSelectedIndex();
         flightCode.setText(aircraftManagementDatabase.getFlightCode(managementRecordIndex));
         gateStatus.setText(statusOfGate(gateInfoDatabase.getStatus(gateNumber)));
         flightStatus.setText(aircraftManagementDatabase.getStatus(managementRecordIndex));
         showButtons(true);
-      }
-    }
-
-
+      } //End if
+    } //End if
   }
 
+  /**
+   * Enable buttons when necessary
+   *
+   * @param showButtons
+   */
   private void showButtons(boolean showButtons){
     if(!showButtons){
       buttonDocked.setEnabled(showButtons);
@@ -218,7 +227,7 @@ public class GateConsole extends JFrame implements Observer, ActionListener {
         return "OCCUPIED";
       default:
         return "UNKNOWN";
-    }
+    } //End switch
   }
 
   /**
@@ -229,10 +238,6 @@ public class GateConsole extends JFrame implements Observer, ActionListener {
     if(gateInfoDatabase.getStatus(gateNumber) != 0){
       managementRecordIndex = gateInfoDatabase.assignedmCode(gateNumber); //get assigned management record mCode
       assignedMR = aircraftManagementDatabase.getMR(managementRecordIndex); //get assigned management record
-      //System.out.println(managementRecordIndex);
-      //System.out.println(assignedMR);
-      //flightCode.setText(aircraftManagementDatabase.getMR(managementRecordIndex).getFlightCode()); //sets text of flight code label
-      //flightStatus.setText(aircraftManagementDatabase.getStatus(managementRecordIndex)); //sets text of flight status label
     } //end if
 
     for(int i = 0; i < aircraftManagementDatabase.maxMRs; i++){
@@ -242,15 +247,8 @@ public class GateConsole extends JFrame implements Observer, ActionListener {
         listModelOfManagement.set(i, null);
       } else if(MR == assignedMR){
         listModelOfManagement.set(i, MR);
-      }
-    }
-
-
-//    if (assignedMR == null) {
-//      listModelOfManagement.set(0, null);
-//    } else {
-//      listModelOfManagement.set(0, assignedMR);
-//    }
+      } //End if
+    } //End for
   }
 
   @Override
@@ -293,7 +291,18 @@ public class GateConsole extends JFrame implements Observer, ActionListener {
               "\nFlight Status: " + aircraftManagementDatabase.getStatus(managementRecordIndex) + "\nComing From: " +
               aircraftManagementDatabase.getItinerary(managementRecordIndex).getFrom() + "\nGoing To: " + aircraftManagementDatabase.getItinerary(managementRecordIndex).getTo() +
               "\nNext Destination: " + aircraftManagementDatabase.getItinerary(managementRecordIndex).getNext() + "\nNumber of Passengers on board: " + amountOfPassengers);
-    }
+    } //end if
+
+    if(e.getSource() == buttonShowPassengers){
+      String passengers = "";
+      PassengerList list = aircraftManagementDatabase.getPassengerList(managementRecordIndex);
+      ArrayList<PassengerDetails> details = list.getDetails();
+      for(int i = 0; i < list.getDetails().size(); i++){
+        passengers = passengers + details.get(i).getName() + "\n";
+      } //end for
+
+      JOptionPane.showMessageDialog(null, "Passengers:\n\n" + passengers);
+    } //end if
   }
 
   /**
@@ -303,5 +312,4 @@ public class GateConsole extends JFrame implements Observer, ActionListener {
     String name = JOptionPane.showInputDialog("Passenger Name: ");
     return name;
   }
-
 }
