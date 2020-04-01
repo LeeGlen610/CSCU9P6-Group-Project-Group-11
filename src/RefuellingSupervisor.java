@@ -32,15 +32,18 @@ public class RefuellingSupervisor extends JFrame
   * @clientCardinality 1
   * @label accesses/observes
   * @directed*/
- // private AircraftManagementDatabase lnkUnnamed;
-  private JButton awaitRefuelling;
 
+//await refuelling button
+  private JButton awaitRefuelling;
+  //new text fields for flight codes and status
   private JTextField displayCodes;
   private JTextField displayStatus;
 
   private JPanel listPanel;
+  // new aircraft list to hold the aircrafts that need refuelling
   private JList<ManagementRecord> aircrafts;
   private DefaultListModel<ManagementRecord> listModelOfManagement;
+  //labels for flight codes, status
   private JLabel flightStatus;
   private JLabel labelForFlightStatus;
   private JLabel flightCodes;
@@ -57,22 +60,25 @@ public class RefuellingSupervisor extends JFrame
     Container window = getContentPane();
     window.setLayout(new FlowLayout());
 
-
+    //create the new button
     awaitRefuelling = new JButton("Await Refuelling");
+    //add new button
     window.add(awaitRefuelling);
     awaitRefuelling.addActionListener(this);
 
     add(new JLabel("FLIGHT_CODES"));
+    //create text field
     displayCodes = new JTextField("", 15);
-    add(displayCodes);
+    add(displayCodes); // add label
 
     add(new JLabel("FLIGHT_STATUS"));
+    //create field
     displayStatus = new JTextField("", 15);
-    add(displayStatus);
+    add(displayStatus); //add label
 
+    // show button, labels and text fields
     setVisible(true);
     show();
-
 
     //new list of aircrafts that need refuelling
     listPanel = new JPanel();
@@ -84,8 +90,10 @@ public class RefuellingSupervisor extends JFrame
     scroll.setMinimumSize(new Dimension(500,  300));
 
     listPanel.add(scroll);
+    //set list size
     listModelOfManagement.setSize(aircraftManagementDatabase.maxMRs);
-  }
+  } //end of refuelling supervisor method
+  //update buttons method
   private void updateButtons() {
     if (!buttonAvailability) {
       awaitRefuelling.setEnabled(false);
@@ -97,18 +105,20 @@ public class RefuellingSupervisor extends JFrame
         awaitRefuelling.setEnabled(false);
       }
     }
-  }
-
+  }//end of update buttons method
+    //updating the records
   private void updateRecords() {
+    //go through the list
     for (int i=0; i<aircraftManagementDatabase.maxMRs; i++) {
-      ManagementRecord managementRecord = aircraftManagementDatabase.getMR(i);
+      ManagementRecord managementRecord = aircraftManagementDatabase.getMR(i); //get each value
+      //if empty
       if (managementRecord == null) {
         listModelOfManagement.set(i,null);
       } else if ( managementRecord.getStatus(managementRecord.getStatus()).equalsIgnoreCase("READY_REFUEL")) {
         listModelOfManagement.set(i,managementRecord);
       }
     }
-  }
+  }//end of update records method
 
   private void itemSelected() {
     if (!aircrafts.getValueIsAdjusting()) {
@@ -119,7 +129,7 @@ public class RefuellingSupervisor extends JFrame
         if (buttonAvailability) {
           buttonAvailability = false;
         }
-        updateButtons();
+        updateButtons(); //update buttons
       } else {
         managementRecordIndex = aircrafts.getSelectedIndex();
         flightCodes.setText(aircraftManagementDatabase.getFlightCode(managementRecordIndex));
@@ -127,20 +137,21 @@ public class RefuellingSupervisor extends JFrame
         if (!buttonAvailability) {
           buttonAvailability = true;
         }
-        updateButtons();
+        updateButtons(); //update buttons
       }
     }
-  }
+  }//end of itemSelected method
 
   @Override
   public void actionPerformed(ActionEvent e) {
-    if (e.getSource() == awaitRefuelling) {
-      aircraftManagementDatabase.setStatus(managementRecordIndex, Integer.parseInt("READY_REFUEL"));
-    }
-  }
+    if (e.getSource() == awaitRefuelling) { //if button clicked
+      aircraftManagementDatabase.setStatus(managementRecordIndex, 13); //set status to case 13: ready refuel
+    } //end of if statement
+  } //end of action performed
 
   @Override
   public void update(Observable o, Object arg) {
-    updateRecords();
-  }
-}
+    updateRecords(); //update the records and then..
+    itemSelected();// update items selected
+  } //end of update method
+} //end of RefuellingSupervisor class

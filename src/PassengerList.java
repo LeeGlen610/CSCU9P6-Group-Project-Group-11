@@ -21,13 +21,17 @@ public class PassengerList {
  * @shapeType AggregationLink
  * @supplierCardinality 0..*
  */
-
+  /**
+  * new array list with passengers
+   */
   private ArrayList<PassengerDetails> details;
 
   public PassengerList() {
     details = new ArrayList<>();
   }
-
+  /**
+   * return the list
+   */
   public ArrayList<PassengerDetails> getDetails() {
     return details;
   }
@@ -38,7 +42,6 @@ public class PassengerList {
  * @preconditions Status is READY_PASSENGERS
  */
 
-
   public void addPassenger(PassengerDetails details){
     this.details.add(details);
   }
@@ -46,4 +49,5 @@ public class PassengerList {
   public void passengersLeft() {
     details = new ArrayList<>();
   }
+
 }
