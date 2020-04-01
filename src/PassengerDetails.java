@@ -13,21 +13,23 @@
 public class PassengerDetails {
   /**
    * Constructor: Just a name required.
+   * @param name The Name of The Passenger.
    */
   public PassengerDetails(String name){
     this.name=name;
-  }
+  } //END CONSTRUCTOR PassengerDetails
 
   /**
    * Return the name of this passenger.
+   * @return The Name of The Passenger.
    */
   public String getName(){
     return name;
-  }
+  } //END METHOD getName
 
   /**
    * The passenger's name!
    */
   private String name;
 
-}
+}//END CLASS PassengerDetails

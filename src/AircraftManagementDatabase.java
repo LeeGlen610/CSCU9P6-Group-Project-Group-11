@@ -79,6 +79,8 @@ public class AircraftManagementDatabase extends Observable {
     /**
      * Return the flight code from the given MR supplied as a parameter.
      * The request is forwarded to the MR.
+     * @param mCode The MR's Index.
+     * @return The Flight Code of The Flight.
      */
     public String getFlightCode(int mCode) {
         return MRs[mCode].getFlightCode();
@@ -90,6 +92,7 @@ public class AircraftManagementDatabase extends Observable {
      * Principally for call by the various interface screens.
      *
      * @param statusCode The Status to Search For.
+     * @return The MR's With The Same Status.
      * @throws NullPointerException If The MR Array isn't Initialised.
      */
     public int[] getWithStatus(int statusCode) throws NullPointerException {
@@ -197,6 +200,7 @@ public class AircraftManagementDatabase extends Observable {
      * Return the PassengerList of the aircraft with the given mCode.
      *
      * @param mCode The MR's Index.
+     * @return The Passengers Of The MR.
      */
     public PassengerList getPassengerList(int mCode) {
         return MRs[mCode].getPassengerList();
@@ -215,6 +219,8 @@ public class AircraftManagementDatabase extends Observable {
 
     /**
      * Return the Itinerary of the aircraft with the given mCode.
+     * @param mCode The MR's Index.
+     * @return The Itinerary of The Flight.
      */
     public Itinerary getItinerary(int mCode) {
         return MRs[mCode].getItinerary();

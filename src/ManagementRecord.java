@@ -213,6 +213,7 @@ public class ManagementRecord {
      * This is a general purpose state change request where no special details accompany the state change.
      * [Special status changers are, for example, "taxiTo", where a gate number is supplied.]
      *
+     * @param newStatus The Status To Be Changed To.
      * @preconditions Valid transition requested
      */
     public void setStatus(int newStatus) {
@@ -221,6 +222,7 @@ public class ManagementRecord {
 
     /**
      * Return the status code of this MR.
+     * @return The Status code.
      */
     public int getStatus() {
         return status;
@@ -229,6 +231,7 @@ public class ManagementRecord {
 
     /**
      * Returns the status text of the MR.
+     *
      * @param status The Current Status of The MR.
      * @return The status based of the Management Record's status code.
      */
@@ -279,6 +282,7 @@ public class ManagementRecord {
 
     /**
      * Return the flight code of this MR.
+     * @return The Flight Code.
      */
     public String getFlightCode() {
         return flightCode;
@@ -289,6 +293,7 @@ public class ManagementRecord {
      * <p>
      * Status must be FREE now, and becomes either IN_TRANSIT or WANTING_TO_LAND depending on the details in the flight descriptor.
      *
+     * @param fd The Flight That Has Been Detected.
      * @preconditions Status is FREE
      */
     public void radarDetect(FlightDescriptor fd) {
@@ -304,7 +309,12 @@ public class ManagementRecord {
         }//END IF
     }//END METHOD radarDetect
 
-    public int getGateNumber(){
+    /**
+     * Returns The Gate Number Assigned To The Management Record.
+     *
+     * @return The Gate Number
+     */
+    public int getGateNumber() {
         return gateNumber;
     }//END METHOD getGateNumber
 
@@ -331,6 +341,7 @@ public class ManagementRecord {
      * <p>
      * The gate number is recorded.The status must have been LANDED and becomes TAXIING.
      *
+     * @param gateNumber The Gate Number To Taxi To.
      * @preconditions Status is LANDED
      */
     public void taxiTo(int gateNumber) {
@@ -347,6 +358,7 @@ public class ManagementRecord {
      * <p>
      * The status must have been READY_FOR_CLEAN_MAINT or CLEAN_AWAIT_MAINT and becomes FAULTY_AWAIT_CLEAN or AWAIT_REPAIR respectively.
      *
+     * @param description The Fault That Has Been Found.
      * @preconditions Status is READY_FOR_CLEAN_MAINT or CLEAN_AWAIT_MAINT
      */
     public void faultsFound(String description) {
@@ -366,6 +378,7 @@ public class ManagementRecord {
      * <p>
      * For this operation to be applicable, the status must be READY_PASSENGERS, and it doesn't change.
      *
+     * @param details The Passenger Details.
      * @preconditions Status is READY_PASSENGERS
      */
     public void addPassenger(PassengerDetails details) {
@@ -374,6 +387,7 @@ public class ManagementRecord {
 
     /**
      * Return the entire current PassengerList.
+     * @return The Passenger List.
      */
     public PassengerList getPassengerList() {
         return passengerList;
@@ -381,6 +395,7 @@ public class ManagementRecord {
 
     /**
      * Return the aircraft's Itinerary.
+     * @return THe Aircraft's Itinerary.
      */
     public Itinerary getItinerary() {
         return itinerary;
@@ -390,14 +405,15 @@ public class ManagementRecord {
     /**
      * Returns where the plane came from, where it's landing
      * and depending on if the airplane will be going to another destination where it will go next.
+     *
      * @return The plane destination information.
      */
     @Override
     public String toString() {
-        if (!(itinerary.getNext() ==null)) {
+        if (!(itinerary.getNext() == null)) {
             return flightCode + " - From: " + itinerary.getFrom() + " Landing At: " + itinerary.getTo() + " Next Stop: " + itinerary.getNext();
         } else {
             return flightCode + " - From: " + itinerary.getFrom() + " Landing At: " + itinerary.getTo();
         } //END IF/ELSE
-        } //END METHOD toString
-}
+    } //END METHOD toString
+} //END CLASS ManagementRecord
