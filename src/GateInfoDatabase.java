@@ -12,6 +12,7 @@ import java.util.Observer;
  * Each gate's number is its index in the array (0..)
  * GateConsoles and GroundOperationsControllers are controllers of this class: sending it messages when the gate status is to be changed.
  * GateConsoles and GroundOperationsControllers also register as observers of this class. Whenever a change occurs to any gate, the obervers are notified.
+ *
  * @stereotype model
  * @url element://model:project::SAAMS/design:view:::id2wdkkcko4qme4cko4svm2
  * @url element://model:project::SAAMS/design:view:::id1jkohcko4qme4cko4svww
@@ -19,21 +20,25 @@ import java.util.Observer;
  * @url element://model:project::SAAMS/design:view:::id1un8dcko4qme4cko4sw27
  */
 public class GateInfoDatabase extends Observable {
-  /**
- * Holds one gate object per gate in the airport.
- * @clientCardinality 1
- * @directed true
- * @label contains
- * @link aggregationByValue
- * @supplierCardinality 0..*
- */
-  private Gate[] gates;
+    /**
+     * Holds one gate object per gate in the airport.
+     *
+     * @clientCardinality 1
+     * @directed true
+     * @label contains
+     * @link aggregationByValue
+     * @supplierCardinality 0..*
+     */
+    private Gate[] gates;
 
-  /**
-   *  A constant: the number of aircraft gates at the airport.
-   */
-  public int maxGateNumber = 2;
+    /**
+     * A constant: the number of aircraft gates at the airport.
+     */
+    public int maxGateNumber = 2;
 
+    /**
+     * Constructor of GateInfoDatabase. Creates new gates for aircraft to use
+     */
     public GateInfoDatabase() {
         gates = new Gate[maxGateNumber];
         for (int i = 0; i < maxGateNumber; i++) {
@@ -42,47 +47,71 @@ public class GateInfoDatabase extends Observable {
     }
 
     /**
- * Obtain and return the status of the given gate identified by the gateNumber parameter.
- */
-  public int getStatus(int gateNumber){
-	  return gates[gateNumber].getStatus();
-  }
+     * Obtain and return the status of the given gate identified by the gateNumber parameter.
+     *
+     * @param gateNumber The Gate Number
+     * @return The Gate's Status.
+     */
+    public int getStatus(int gateNumber) {
+        return gates[gateNumber].getStatus();
+    }
 
+    /**
+     * Returns the specified gate.
+     *
+     * @param gateNumber The Gate Being Returned.
+     * @return The Gate Based of The Passed-In Number.
+     */
+    public Gate getGate(int gateNumber) {
+        return gates[gateNumber];
+    }//END METHOD getGate
 
-  public Gate getGate(int gateNumber){
-      return gates[gateNumber];
-  }
+    /**
+     * Returns an array containing the status of all gates.
+     * For data collection by the GOC.
+     *
+     * @return Statuses of Gates.
+     */
+    public int[] getStatuses() {
+        int[] statuses = new int[maxGateNumber];
+        for (int i = 0; i < maxGateNumber; i++) {
+            statuses[i] = gates[i].getStatus();
+        }//END FOR
+        return statuses;
+    }//END METHOD getStatuses
 
-/**
- * Returns an array containing the status of all gates.
- * For data collection by the GOC.
- */
-  public int[] getStatuses(){
-	  int[] statuses = new int[maxGateNumber];
-	  for(int i = 0; i < maxGateNumber; i++) {
-		  statuses[i] = gates[i].getStatus();
-	  }
-	  return statuses;
-  }
+    /**
+     * Forward a status change request to the given gate identified by the gateNumber parameter. Called to allocate a free gate to the aircraft identified by mCode.
+     * @param gateNumber The Gate That The Plane Will Allocate.
+     * @param mCode The MR's Index.
+     */
+    public void allocate(int gateNumber, int mCode) {
+        gates[gateNumber].allocate(mCode);
+    }//END METHOD allocate
 
-/**
- * Forward a status change request to the given gate identified by the gateNumber parameter. Called to allocate a free gate to the aircraft identified by mCode.
- */
-  public void allocate(int gateNumber, int mCode){
-	  gates[gateNumber].allocate(mCode);
-  }
+    /**
+     * Forward a status change request to the given gate identified by the gateNumber parameter. Called to indicate that the expected aircraft has arrived at the gate.
+     * @param gateNumber The Gate That The Plane Will Dock At.
+     */
+    public void docked(int gateNumber) {
+        gates[gateNumber].docked();
+    }//END METHOD docked
 
-/**
- * Forward a status change request to the given gate identified by the gateNumber parameter. Called to indicate that the expected aircraft has arrived at the gate.
- */
-  public void docked(int gateNumber){
-	  gates[gateNumber].docked();
-  }
+    /**
+     * Forward a status change request to the given gate identified by the gateNumber parameter. Called to indicate that the aircraft has departed and that the gate is now free.
+     * @param gateNumber The Gate That The Plane Departed From.
+     */
+    public void departed(int gateNumber) {
+        gates[gateNumber].departed();
+    }//END METHOD departed
 
-/**
- * Forward a status change request to the given gate identified by the gateNumber parameter. Called to indicate that the aircraft has departed and that the gate is now free.
- */
-  public void departed(int gateNumber){
-	  gates[gateNumber].departed();
-  }
-}
+    /**
+     * Returns the assigned mCode for the assigned management record.
+     *
+     * @param gateNumber The gate number
+     * @return //The mCode of the assigned management record
+     */
+    public int assignedmCode(int gateNumber) {
+        return gates[gateNumber].getmCode();
+    }//END METHOD assignedmCode
+}//END CLASS GateInfoDataBase.
