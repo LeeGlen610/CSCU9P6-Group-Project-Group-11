@@ -33,17 +33,26 @@ public class RefuellingSupervisor extends JFrame
   * @label accesses/observes
   * @directed*/
 
-//await refuelling button
+
+  /**
+   * await refuelling button
+  */
   private JButton awaitRefuelling;
-  //new text fields for flight codes and status
+  /**
+   * new text fields for flight codes and status
+   */
   private JTextField displayCodes;
   private JTextField displayStatus;
 
   private JPanel listPanel;
-  // new aircraft list to hold the aircrafts that need refuelling
+  /**
+   * new aircraft list to hold the aircrafts that need refuelling
+   */
   private JList<ManagementRecord> aircrafts;
   private DefaultListModel<ManagementRecord> listModelOfManagement;
-  //labels for flight codes, status
+  /**
+   *  labels for flight codes, status
+   */
   private JLabel flightStatus;
   private JLabel labelForFlightStatus;
   private JLabel flightCodes;
@@ -59,28 +68,37 @@ public class RefuellingSupervisor extends JFrame
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     Container window = getContentPane();
     window.setLayout(new FlowLayout());
-
-    //create the new button
+    /**
+     * create the new button
+     */
     awaitRefuelling = new JButton("Await Refuelling");
-    //add new button
+    /**
+     * add new button to the window
+     */
     window.add(awaitRefuelling);
     awaitRefuelling.addActionListener(this);
 
     add(new JLabel("FLIGHT_CODES"));
-    //create text field
+    /**
+     * create text field
+     */
     displayCodes = new JTextField("", 15);
     add(displayCodes); // add label
 
     add(new JLabel("FLIGHT_STATUS"));
-    //create field
+    /**
+     * create field
+     */
     displayStatus = new JTextField("", 15);
     add(displayStatus); //add label
-
-    // show button, labels and text fields
+    /**
+     * show button, labels and text fields
+     */
     setVisible(true);
     show();
-
-    //new list of aircrafts that need refuelling
+    /**
+     * new list of aircrafts that need refuelling
+     */
     listPanel = new JPanel();
     listModelOfManagement = new DefaultListModel<>();
     aircrafts = new JList<>(listModelOfManagement);
@@ -90,10 +108,17 @@ public class RefuellingSupervisor extends JFrame
     scroll.setMinimumSize(new Dimension(500,  300));
 
     listPanel.add(scroll);
-    //set list size
+    /**
+     * set list size
+     */
     listModelOfManagement.setSize(aircraftManagementDatabase.maxMRs);
   } //end of refuelling supervisor method
-  //update buttons method
+  /**
+   * update buttons method
+   * button availability shows if a button can be pressed according to the flight status
+   * if button is not available then set wait to refuel to false,
+   * else if its ready for refuelling, the button can be pressed and the status can be set to "ready refuel"
+   */
   private void updateButtons() {
     if (!buttonAvailability) {
       awaitRefuelling.setEnabled(false);
@@ -106,20 +131,32 @@ public class RefuellingSupervisor extends JFrame
       }
     }
   }//end of update buttons method
-    //updating the records
+  /**
+   * updating the records method
+   */
   private void updateRecords() {
     //go through the list
     for (int i=0; i<aircraftManagementDatabase.maxMRs; i++) {
       ManagementRecord managementRecord = aircraftManagementDatabase.getMR(i); //get each value
       //if empty
       if (managementRecord == null) {
+        //set value to null (empty)
         listModelOfManagement.set(i,null);
+        //else...
       } else if ( managementRecord.getStatus(managementRecord.getStatus()).equalsIgnoreCase("READY_REFUEL")) {
+        //get the status from the management record and set the status of that value in the list
         listModelOfManagement.set(i,managementRecord);
-      }
-    }
+      }//end of else if
+    } //end of for loop
   }//end of update records method
-
+  /**
+   * item selected method
+   * if a specific value is pressed then it is highlighted as clicked on
+   * if button is not available to be clicked and if the value selected is null then set the index as empty (-1),
+   * and set the flight code and status to "unknown"
+   * else, set flight code and status from that index
+   * call update buttons method
+   */
   private void itemSelected() {
     if (!aircrafts.getValueIsAdjusting()) {
       if (aircrafts.getSelectedValue() == null) {
@@ -141,14 +178,20 @@ public class RefuellingSupervisor extends JFrame
       }
     }
   }//end of itemSelected method
-
+  /**
+   * action performed method
+   * if specific button is pressed then set status to the string from the appropriate int given
+   */
   @Override
   public void actionPerformed(ActionEvent e) {
     if (e.getSource() == awaitRefuelling) { //if button clicked
       aircraftManagementDatabase.setStatus(managementRecordIndex, 13); //set status to case 13: ready refuel
     } //end of if statement
   } //end of action performed
-
+  /**
+   * update method
+   * calls update records and item selected methods
+   */
   @Override
   public void update(Observable o, Object arg) {
     updateRecords(); //update the records and then..
