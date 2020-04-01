@@ -255,8 +255,8 @@ public class GOC extends JFrame implements ActionListener, Observer {
                 JOptionPane.showMessageDialog(null, "No gates are currently free!");
             } else {
                 gateInfoDatabase.allocate(recordIndex, managementRecordIndex);
-                aircraftManagementDatabase.taxiTo(recordIndex, managementRecordIndex);
-                aircraftManagementDatabase.setStatus(recordIndex, 6);
+                aircraftManagementDatabase.taxiTo(managementRecordIndex, recordIndex);
+                aircraftManagementDatabase.setStatus(managementRecordIndex, 6);
             }
 
         }
