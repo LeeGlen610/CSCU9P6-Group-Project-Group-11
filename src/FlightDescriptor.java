@@ -14,24 +14,40 @@ public class FlightDescriptor {
   /**
    * Constructor: A new FlightDescriptor must be given a flightCode (String), an Itinerary,
    * and the current PassengerList.
+   * @param flightCode The Flight Code of The Flight.
+   * @param itinerary The Itinerary of The Flight.
+   * @param list The Passengers That Are On The Flight.
    */
   public FlightDescriptor(String flightCode, Itinerary itinerary, PassengerList list){
     this.flightCode = flightCode;
     this.itinerary = itinerary;
     this.list = list;
-  }
+  } //END CONSTRUCTOR FlightDescriptor.
 
+  /**
+   * Returns the passengers list.
+   * @return The Passenger List.
+   */
   public PassengerList getList() {
     return list;
-  }
+  }//END METHOD getList
 
+  /**
+   * Returns the itinerary of the plane.
+   * @return The Itinerary of the plane.
+   */
   public Itinerary getItinerary() {
     return itinerary;
-  }
+  } //END METHOD getItinerary
 
+
+  /**
+   * Returns the flight code of the plane.
+   * @return The Flight Code.
+   */
   public String getFlightCode() {
     return flightCode;
-  }
+  } //END METHOD getFlightCode
 
   /**
    * Each Flight Descriptor contains a list of passengers on the flight.
@@ -60,4 +76,4 @@ public class FlightDescriptor {
  * This is the code used in timetables, and is useful to show on public information screens.*/
   private String flightCode;
 
-}
+} //END CLASS FlightDescriptor
