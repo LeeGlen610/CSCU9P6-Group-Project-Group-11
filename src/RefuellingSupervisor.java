@@ -6,6 +6,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.ObjectStreamException;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * An interface to SAAMS:
@@ -20,59 +23,135 @@ import java.awt.event.ActionListener;
  * @url element://model:project::SAAMS/design:view:::id3y5z3cko4qme4cko4sw81
  */
 public class RefuellingSupervisor extends JFrame
-        implements ActionListener {
+        implements ActionListener, Observer {
 
-  private final AircraftManagementDatabase aircraftManagementDatabase;
+  private AircraftManagementDatabase aircraftManagementDatabase;
 /**
   * The Refuelling Supervisor Screen interface has access to the AircraftManagementDatabase.
   * @supplierCardinality 1
   * @clientCardinality 1
   * @label accesses/observes
   * @directed*/
- // private AircraftManagementDatabase lnkUnnamed;
+
+//await refuelling button
   private JButton awaitRefuelling;
-  private JButton doneRefuelling;
+  //new text fields for flight codes and status
+  private JTextField displayCodes;
+  private JTextField displayStatus;
+
+  private JPanel listPanel;
+  // new aircraft list to hold the aircrafts that need refuelling
+  private JList<ManagementRecord> aircrafts;
+  private DefaultListModel<ManagementRecord> listModelOfManagement;
+  //labels for flight codes, status
+  private JLabel flightStatus;
+  private JLabel labelForFlightStatus;
+  private JLabel flightCodes;
+  private JLabel labelForFlightCodes;
+  private JTextField display;
+  boolean buttonAvailability;
+  int managementRecordIndex;
 
   public RefuellingSupervisor(AircraftManagementDatabase aircraftManagementDatabase) {
     this.aircraftManagementDatabase = aircraftManagementDatabase;
-
 
     setSize(350,150);
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     Container window = getContentPane();
     window.setLayout(new FlowLayout());
 
-
+    //create the new button
     awaitRefuelling = new JButton("Await Refuelling");
+    //add new button
     window.add(awaitRefuelling);
     awaitRefuelling.addActionListener(this);
 
+    add(new JLabel("FLIGHT_CODES"));
+    //create text field
+    displayCodes = new JTextField("", 15);
+    add(displayCodes); // add label
 
-    // show status button
-    doneRefuelling = new JButton("Done Refuelling");
-    window.add(doneRefuelling);
-    doneRefuelling.addActionListener(this);
+    add(new JLabel("FLIGHT_STATUS"));
+    //create field
+    displayStatus = new JTextField("", 15);
+    add(displayStatus); //add label
 
-
-    add(new JLabel("Refuelling supervisor view"));
-    display = new JTextField("", 15);
-    add(display);
+    // show button, labels and text fields
     setVisible(true);
-  }
+    show();
 
+    //new list of aircrafts that need refuelling
+    listPanel = new JPanel();
+    listModelOfManagement = new DefaultListModel<>();
+    aircrafts = new JList<>(listModelOfManagement);
+    aircrafts.addListSelectionListener(e -> itemSelected());
+    JScrollPane scroll = new JScrollPane(aircrafts);
+    scroll.setPreferredSize(new Dimension(500, 300));
+    scroll.setMinimumSize(new Dimension(500,  300));
+
+    listPanel.add(scroll);
+    //set list size
+    listModelOfManagement.setSize(aircraftManagementDatabase.maxMRs);
+  } //end of refuelling supervisor method
+  //update buttons method
+  private void updateButtons() {
+    if (!buttonAvailability) {
+      awaitRefuelling.setEnabled(false);
+    } else {
+      String status = aircraftManagementDatabase.getStatus(managementRecordIndex);
+      if (status.equalsIgnoreCase("READY_REFUEL")){
+        awaitRefuelling.setEnabled(true);
+      } else{
+        awaitRefuelling.setEnabled(false);
+      }
+    }
+  }//end of update buttons method
+    //updating the records
+  private void updateRecords() {
+    //go through the list
+    for (int i=0; i<aircraftManagementDatabase.maxMRs; i++) {
+      ManagementRecord managementRecord = aircraftManagementDatabase.getMR(i); //get each value
+      //if empty
+      if (managementRecord == null) {
+        listModelOfManagement.set(i,null);
+      } else if ( managementRecord.getStatus(managementRecord.getStatus()).equalsIgnoreCase("READY_REFUEL")) {
+        listModelOfManagement.set(i,managementRecord);
+      }
+    }
+  }//end of update records method
+
+  private void itemSelected() {
+    if (!aircrafts.getValueIsAdjusting()) {
+      if (aircrafts.getSelectedValue() == null) {
+        managementRecordIndex = -1;
+        flightCodes.setText("UNKNOWN");
+        flightStatus.setText("UNKNOWN");
+        if (buttonAvailability) {
+          buttonAvailability = false;
+        }
+        updateButtons(); //update buttons
+      } else {
+        managementRecordIndex = aircrafts.getSelectedIndex();
+        flightCodes.setText(aircraftManagementDatabase.getFlightCode(managementRecordIndex));
+        flightStatus.setText(aircraftManagementDatabase.getStatus(managementRecordIndex));
+        if (!buttonAvailability) {
+          buttonAvailability = true;
+        }
+        updateButtons(); //update buttons
+      }
+    }
+  }//end of itemSelected method
 
   @Override
   public void actionPerformed(ActionEvent e) {
+    if (e.getSource() == awaitRefuelling) { //if button clicked
+      aircraftManagementDatabase.setStatus(managementRecordIndex, 13); //set status to case 13: ready refuel
+    } //end of if statement
+  } //end of action performed
 
-      if (e.getSource() == awaitRefuelling) {
-        //managementRecord.getStatus();
-        //managementRecord.getFlightCode();
-        display.setText(ManagementRecord.getStatus());
-        display.setText(ManagementRecord.getFlightCode());
-      }
-
-       else if (e.getSource() == doneRefuelling) {
-
-       }
-  }
-}
+  @Override
+  public void update(Observable o, Object arg) {
+    updateRecords(); //update the records and then..
+    itemSelected();// update items selected
+  } //end of update method
+} //end of RefuellingSupervisor class

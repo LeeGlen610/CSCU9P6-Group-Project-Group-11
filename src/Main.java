@@ -40,7 +40,9 @@ public static void main(String[] args) {
 //  MaintenanceInspector c4 = new MaintenanceInspector(aircraftManagementDatabase);
 //  RefuellingSupervisor c5 = new RefuellingSupervisor(aircraftManagementDatabase);
 //  CleaningSupervisor c6 = new CleaningSupervisor(aircraftManagementDatabase);
-//  GateConsole c7 = new GateConsole(aircraftManagementDatabase,gateInfoDatabase);
+  for(int gateNumber = 0; gateNumber < gateInfoDatabase.maxGateNumber; gateNumber++) {
+    GateConsole c7 = new GateConsole(aircraftManagementDatabase, gateInfoDatabase, gateNumber);
+  }
 //  RadarTransceiver c8 = new RadarTransceiver (aircraftManagementDatabase);
   }
 

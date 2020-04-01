@@ -13,6 +13,7 @@ import java.util.ArrayList;
  * @url element://model:project::SAAMS/design:view:::id1jkohcko4qme4cko4svww
  */
 public class PassengerList {
+<<<<<<< HEAD
     /**
      * The array of PassengerDetails objects.
      *
@@ -26,7 +27,7 @@ public class PassengerList {
     private ArrayList<PassengerDetails> details;
 
     /**
-     *
+     * The Constructor for the passenger list.
      */
     public PassengerList() {
         details = new ArrayList<>();
@@ -58,3 +59,44 @@ public class PassengerList {
         details = new ArrayList<>();
     } //END METHOD passengersLeft
 }//END CLASS PassengerList
+=======
+  /**
+ * The array of PassengerDetails objects.
+ * @byValue
+ * @clientCardinality 1
+ * @directed true
+ * @label contains
+ * @shapeType AggregationLink
+ * @supplierCardinality 0..*
+ */
+  /**
+  * new array list with passengers
+   */
+  private ArrayList<PassengerDetails> details;
+
+  public PassengerList() {
+    details = new ArrayList<>();
+  }
+  /**
+   * return the list
+   */
+  public ArrayList<PassengerDetails> getDetails() {
+    return details;
+  }
+
+  /**
+ * The given passenger is boarding.
+ * Their details are recorded, in the passenger list.
+ * @preconditions Status is READY_PASSENGERS
+ */
+
+  public void addPassenger(PassengerDetails details){
+    this.details.add(details);
+  }
+
+  public void passengersLeft() {
+    details = new ArrayList<>();
+  }
+
+}
+>>>>>>> origin/master
