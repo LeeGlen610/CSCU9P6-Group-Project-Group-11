@@ -57,7 +57,6 @@ public class RefuellingSupervisor extends JFrame
   private JLabel labelForFlightStatus;
   private JLabel flightCodes;
   private JLabel labelForFlightCodes;
-  private JTextField display;
   boolean buttonAvailability;
   int managementRecordIndex;
 
@@ -65,10 +64,21 @@ public class RefuellingSupervisor extends JFrame
     this.aircraftManagementDatabase = aircraftManagementDatabase;
 
     setTitle("Refuelling!");
-    setSize(350,150);
+    setSize(450,650);
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     Container window = getContentPane();
     window.setLayout(new FlowLayout());
+
+    labelForFlightCodes = new JLabel("Flight Code: ");
+    window.add(labelForFlightCodes);
+    flightCodes = new JLabel("");
+    window.add(flightCodes);
+
+    labelForFlightStatus = new JLabel("Flight Status: ");
+    window.add(labelForFlightStatus);
+    flightStatus = new JLabel("");
+    window.add(flightStatus);
+
     /**
      * create the new button
      */
@@ -79,24 +89,7 @@ public class RefuellingSupervisor extends JFrame
     window.add(awaitRefuelling);
     awaitRefuelling.addActionListener(this);
 
-    add(new JLabel("FLIGHT_CODES"));
-    /**
-     * create text field
-     */
-    displayCodes = new JTextField("", 15);
-    add(displayCodes); // add label
 
-    add(new JLabel("FLIGHT_STATUS"));
-    /**
-     * create field
-     */
-    displayStatus = new JTextField("", 15);
-    add(displayStatus); //add label
-    /**
-     * show button, labels and text fields
-     */
-    setVisible(true);
-    show();
     /**
      * new list of aircrafts that need refuelling
      */
@@ -113,6 +106,15 @@ public class RefuellingSupervisor extends JFrame
      * set list size
      */
     listModelOfManagement.setSize(aircraftManagementDatabase.maxMRs);
+
+    updateRecords();
+    window.add(listPanel);
+    itemSelected();
+    /**
+     * show labels, fields and buttons
+     */
+    setVisible(true);
+    aircraftManagementDatabase.addObserver(this);
   } //end of refuelling supervisor method
   /**
    * update buttons method
@@ -186,7 +188,7 @@ public class RefuellingSupervisor extends JFrame
   @Override
   public void actionPerformed(ActionEvent e) {
     if (e.getSource() == awaitRefuelling) { //if button clicked
-      aircraftManagementDatabase.setStatus(managementRecordIndex, 13); //set status to case 13: ready refuel
+      aircraftManagementDatabase.setStatus(managementRecordIndex, 14); //set status to case 13: ready refuel
     } //end of if statement
   } //end of action performed
   /**

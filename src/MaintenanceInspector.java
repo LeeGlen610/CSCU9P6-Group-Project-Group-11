@@ -48,7 +48,7 @@ public class MaintenanceInspector extends JFrame implements ActionListener, Obse
     this.aircraftManagementDatabase = aircraftManagementDatabase;
 
     setTitle("Maintenance!");
-    setSize(350,150);
+    setSize(450,650);
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     Container window = getContentPane();
     window.setLayout(new FlowLayout());
@@ -99,6 +99,8 @@ public class MaintenanceInspector extends JFrame implements ActionListener, Obse
 
 
     listModelOfManagement.setSize(aircraftManagementDatabase.maxMRs);
+
+    aircraftManagementDatabase.addObserver(this);
   }
 
   private void updateRecords() {
@@ -143,7 +145,7 @@ public class MaintenanceInspector extends JFrame implements ActionListener, Obse
       allDone.setEnabled(false);
       foundFault.setEnabled(false);
       awaitingCleaning.setEnabled(false);
-      awaitingCleaning.setEnabled(false);
+      faultFoundAwait.setEnabled(false);
     } else {
       String status = aircraftManagementDatabase.getStatus(managementRecordIndex);
 
@@ -154,9 +156,13 @@ public class MaintenanceInspector extends JFrame implements ActionListener, Obse
       }
       if (status.equalsIgnoreCase("READY_CLEAN_AND_MAINT") || status.equalsIgnoreCase("CLEAN_AWAIT_MAINT")) {
         foundFault.setEnabled(true);
-        awaitingCleaning.setEnabled(true);
       } else {
         foundFault.setEnabled(false);
+      }
+
+      if (status.equalsIgnoreCase("READY_CLEAN_AND_MAINT")){
+        awaitingCleaning.setEnabled(true);
+      } else {
         awaitingCleaning.setEnabled(false);
       }
 
