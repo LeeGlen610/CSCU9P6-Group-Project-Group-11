@@ -332,7 +332,7 @@ public class ManagementRecord {
             passengerList = null;
             faultDescription = "";
             itinerary = null;
-            gateNumber = 0;
+            gateNumber = -1;
         }//END IF
     }// END METHOD radarLostContact
 
