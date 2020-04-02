@@ -88,10 +88,12 @@ public class MaintenanceInspector extends JFrame implements ActionListener, Obse
 
     listPanel.add(scroll);
 
+    listModelOfManagement.setSize(aircraftManagementDatabase.maxMRs);
+
+    updateRecords();
     window.add(listPanel);
     setVisible(true);
     itemSelected();
-    updateRecords();
 
 
 
@@ -136,7 +138,7 @@ public class MaintenanceInspector extends JFrame implements ActionListener, Obse
   }
 
   private void updateButtons() {
-    if (buttonAvailability){
+    if (!buttonAvailability){
       allDone.setEnabled(false);
       foundFault.setEnabled(false);
       awaitingCleaning.setEnabled(false);
