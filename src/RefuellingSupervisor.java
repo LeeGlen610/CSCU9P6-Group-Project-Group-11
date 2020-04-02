@@ -64,6 +64,7 @@ public class RefuellingSupervisor extends JFrame
   public RefuellingSupervisor(AircraftManagementDatabase aircraftManagementDatabase) {
     this.aircraftManagementDatabase = aircraftManagementDatabase;
 
+    setTitle("Refuelling!");
     setSize(350,150);
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     Container window = getContentPane();

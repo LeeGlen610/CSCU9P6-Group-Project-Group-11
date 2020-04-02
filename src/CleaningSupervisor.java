@@ -53,6 +53,7 @@ public class CleaningSupervisor extends JFrame
   public CleaningSupervisor(AircraftManagementDatabase aircraftManagementDatabase) {
     this.aircraftManagementDatabase = aircraftManagementDatabase;
 
+    setTitle("Cleaning!");
     setSize(350,150);
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     Container window = getContentPane();

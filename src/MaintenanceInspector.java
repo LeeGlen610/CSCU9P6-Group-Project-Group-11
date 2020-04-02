@@ -47,6 +47,7 @@ public class MaintenanceInspector extends JFrame implements ActionListener, Obse
   public MaintenanceInspector(AircraftManagementDatabase aircraftManagementDatabase) {
     this.aircraftManagementDatabase = aircraftManagementDatabase;
 
+    setTitle("Maintenance!");
     setSize(350,150);
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     Container window = getContentPane();
