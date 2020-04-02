@@ -222,6 +222,7 @@ public class ManagementRecord {
 
     /**
      * Return the status code of this MR.
+     *
      * @return The Status code.
      */
     public int getStatus() {
@@ -282,6 +283,7 @@ public class ManagementRecord {
 
     /**
      * Return the flight code of this MR.
+     *
      * @return The Flight Code.
      */
     public String getFlightCode() {
@@ -387,6 +389,7 @@ public class ManagementRecord {
 
     /**
      * Return the entire current PassengerList.
+     *
      * @return The Passenger List.
      */
     public PassengerList getPassengerList() {
@@ -395,6 +398,7 @@ public class ManagementRecord {
 
     /**
      * Return the aircraft's Itinerary.
+     *
      * @return THe Aircraft's Itinerary.
      */
     public Itinerary getItinerary() {

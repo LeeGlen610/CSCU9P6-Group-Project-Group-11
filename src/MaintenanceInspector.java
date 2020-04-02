@@ -16,6 +16,7 @@ import java.util.Observer;
  * This class is a controller for the AircraftManagementDatabase: sending it messages to change the aircraft status information.
  * This class also registers as an observer of the AircraftManagementDatabase, and is notified whenever any change occurs in that <<model>> element.
  * See written documentation.
+ *
  * @stereotype boundary/view/controller
  * @url element://model:project::SAAMS/design:node:::id4tg7xcko4qme4cko4swuu.node146
  * @url element://model:project::SAAMS/design:view:::id15rnfcko4qme4cko4swib
@@ -24,194 +25,292 @@ import java.util.Observer;
  * @url element://model:project::SAAMS/design:view:::id3y5z3cko4qme4cko4sw81
  */
 public class MaintenanceInspector extends JFrame implements ActionListener, Observer {
-  private JList<ManagementRecord> aircrafts;
-  private JLabel labelForFlightStatus;
-  private JLabel flightStatus;
-  private JLabel flightCodes;
-  private JButton foundFault;
-  private JButton awaitingCleaning;
-  private JButton faultFoundAwait;
-  private JButton allDone;
-  private DefaultListModel<ManagementRecord> listModelOfManagement;
-  private JLabel labelForFlightCodes;
-  private JPanel listPanel;
-  /**  The Maintenance Inspector Screen interface has access to the AircraftManagementDatabase.
-  * @clientCardinality 1
-  * @supplierCardinality 1
-  * @label accesses/observes
-  * @directed*/
-  private AircraftManagementDatabase aircraftManagementDatabase;
-  private int managementRecordIndex;
-  private boolean buttonAvailability;
 
-  public MaintenanceInspector(AircraftManagementDatabase aircraftManagementDatabase) {
-    this.aircraftManagementDatabase = aircraftManagementDatabase;
+    /**
+     * The JList for the Management Records.
+     */
+    private JList<ManagementRecord> aircrafts;
 
-    setTitle("Maintenance!");
-    setSize(450,650);
-    setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-    Container window = getContentPane();
-    window.setLayout(new FlowLayout());
+    /**
+     * Label for the flight status.
+     */
+    private JLabel labelForFlightStatus;
 
-    labelForFlightCodes = new JLabel("Flight Code: ");
-    window.add(labelForFlightCodes);
-    flightCodes = new JLabel("");
-    window.add(flightCodes);
+    /**
+     * label to be used by the flight status.
+     */
+    private JLabel flightStatus;
 
-    labelForFlightStatus = new JLabel("Flight Status: ");
-    window.add(labelForFlightStatus);
-    flightStatus = new JLabel("");
-    window.add(flightStatus);
+    /**
+     * Label to be used by the flight code.
+     */
+    private JLabel flightCodes;
 
-    allDone = new JButton("Maintenance Finished!");
-    allDone.addActionListener(this);
-    window.add(allDone);
+    /**
+     * User has found a fault and is now typing it up.
+     */
+    private JButton foundFault;
 
-    faultFoundAwait = new JButton("Fault Found! Awaiting Cleaning!");
-    faultFoundAwait.addActionListener(this);
-    window.add(faultFoundAwait);
+    /**
+     * Awaits cleaning to be finished.
+     */
+    private JButton awaitingCleaning;
 
-    foundFault = new JButton("Found A Fault!");
-    foundFault.addActionListener(this);
-    window.add(foundFault);
+    /**
+     * Waits for cleaning to finish to work on repairs.
+     */
+    private JButton faultFoundAwait;
 
-    awaitingCleaning = new JButton("Await Cleaning!");
-    awaitingCleaning.addActionListener(this);
-    window.add(awaitingCleaning);
+    /**
+     * Finished maintenance.
+     */
+    private JButton allDone;
 
-    listPanel = new JPanel();
-    listModelOfManagement = new DefaultListModel<>();
-    aircrafts = new JList<>(listModelOfManagement);
-    aircrafts.addListSelectionListener(e -> itemSelected());
-    JScrollPane scroll = new JScrollPane(aircrafts);
-    scroll.setPreferredSize(new Dimension(500, 300));
-    scroll.setMinimumSize(new Dimension(500,  300));
+    /**
+     * The items of the JList - Management Records.
+     */
+    private DefaultListModel<ManagementRecord> listModelOfManagement;
 
-    listPanel.add(scroll);
+    /**
+     * Label for the flight codes.
+     */
+    private JLabel labelForFlightCodes;
 
-    listModelOfManagement.setSize(aircraftManagementDatabase.maxMRs);
+    /**
+     * The panel that will be hold the JList.
+     */
+    private JPanel listPanel;
 
-    updateRecords();
-    window.add(listPanel);
-    setVisible(true);
-    itemSelected();
+    /**
+     * The Maintenance Inspector Screen interface has access to the AircraftManagementDatabase.
+     *
+     * @clientCardinality 1
+     * @supplierCardinality 1
+     * @label accesses/observes
+     * @directed
+     */
+    private AircraftManagementDatabase aircraftManagementDatabase;
 
+    /**
+     * The index of the selected management record.
+     */
+    private int managementRecordIndex = -1;
 
+    /**
+     * Depending on the management record index the buttons will activate or not.
+     */
+    private boolean buttonAvaliablity = false;
 
-    listModelOfManagement.setSize(aircraftManagementDatabase.maxMRs);
+    /**
+     * Constructor for the MaintenanceInspector to make the view for it.
+     *
+     * @param aircraftManagementDatabase Holds All The Management Records.
+     */
+    public MaintenanceInspector(AircraftManagementDatabase aircraftManagementDatabase) {
+        //Initialises the database held.
+        this.aircraftManagementDatabase = aircraftManagementDatabase;
 
-    aircraftManagementDatabase.addObserver(this);
-  }
+        //Initialise the JFrame.
+        setTitle("Maintenance!");
+        setSize(450, 650);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        Container window = getContentPane();
+        window.setLayout(new FlowLayout());
 
-  private void updateRecords() {
-    for (int i = 0; i < aircraftManagementDatabase.maxMRs; i++) {
-      ManagementRecord managementRecord = aircraftManagementDatabase.getMR(i);
-      if (managementRecord == null) {
-        listModelOfManagement.set(i, null);
-      } else if (managementRecord.getStatus(managementRecord.getStatus()).equalsIgnoreCase("FAULTY_AWAIT_CLEAN")
-              || managementRecord.getStatus(managementRecord.getStatus()).equalsIgnoreCase("READY_CLEAN_AND_MAINT")
-              || managementRecord.getStatus(managementRecord.getStatus()).equalsIgnoreCase("CLEAN_AWAIT_MAINT")
-              || managementRecord.getStatus(managementRecord.getStatus()).equalsIgnoreCase("OK_AWAIT_CLEAN")
-              || managementRecord.getStatus(managementRecord.getStatus()).equalsIgnoreCase("AWAIT_REPAIR")) {
-        listModelOfManagement.set(i, managementRecord);
-      }//END IF/ELSE
-    } //END FOR
-  }//END METHOD addRecords
+        //Create the labels for the frame.
+        labelForFlightCodes = new JLabel("Flight Code: ");
+        window.add(labelForFlightCodes);
+        flightCodes = new JLabel("");
+        window.add(flightCodes);
 
-  private void itemSelected() {
-    if (!aircrafts.getValueIsAdjusting()) {
-      if (aircrafts.getSelectedValue() == null) {
-        managementRecordIndex = -1;
-        flightCodes.setText("UNKNOWN");
-        flightStatus.setText("UNKNOWN");
-        if (buttonAvailability) {
-          buttonAvailability = false;
-        }
-        updateButtons();
-      } else {
-        managementRecordIndex = aircrafts.getSelectedIndex();
-        flightCodes.setText(aircraftManagementDatabase.getFlightCode(managementRecordIndex));
-        flightStatus.setText(aircraftManagementDatabase.getStatus(managementRecordIndex));
-        if (!buttonAvailability) {
-          buttonAvailability = true;
-        }
-        updateButtons();
-      }
-    }
-  }
+        labelForFlightStatus = new JLabel("Flight Status: ");
+        window.add(labelForFlightStatus);
+        flightStatus = new JLabel("");
+        window.add(flightStatus);
 
-  private void updateButtons() {
-    if (!buttonAvailability){
-      allDone.setEnabled(false);
-      foundFault.setEnabled(false);
-      awaitingCleaning.setEnabled(false);
-      faultFoundAwait.setEnabled(false);
-    } else {
-      String status = aircraftManagementDatabase.getStatus(managementRecordIndex);
+        //Create the buttons for the frame and uses the MaintenanceInspector as its action listener.
+        allDone = new JButton("Maintenance Finished!");
+        allDone.addActionListener(this);
+        window.add(allDone);
 
-      if (status.equalsIgnoreCase("CLEAN_AWAIT_MAINT")){
-        allDone.setEnabled(true);
-      } else {
-        allDone.setEnabled(false);
-      }
-      if (status.equalsIgnoreCase("READY_CLEAN_AND_MAINT") || status.equalsIgnoreCase("CLEAN_AWAIT_MAINT")) {
-        foundFault.setEnabled(true);
-      } else {
-        foundFault.setEnabled(false);
-      }
+        faultFoundAwait = new JButton("Fault Found! Awaiting Cleaning!");
+        faultFoundAwait.addActionListener(this);
+        window.add(faultFoundAwait);
 
-      if (status.equalsIgnoreCase("READY_CLEAN_AND_MAINT")){
-        awaitingCleaning.setEnabled(true);
-      } else {
-        awaitingCleaning.setEnabled(false);
-      }
+        foundFault = new JButton("Found A Fault!");
+        foundFault.addActionListener(this);
+        window.add(foundFault);
 
-      if (status.equalsIgnoreCase("FAULTY_AWAIT_CLEAN")){
-        faultFoundAwait.setEnabled(true);
-      } else{
-        faultFoundAwait.setEnabled(false);
-      }
+        awaitingCleaning = new JButton("Await Cleaning!");
+        awaitingCleaning.addActionListener(this);
+        window.add(awaitingCleaning);
 
-    }
-  }
+        //Create the JList for the management records.
+        listPanel = new JPanel();
+        listModelOfManagement = new DefaultListModel<>();
+        aircrafts = new JList<>(listModelOfManagement);
+        aircrafts.addListSelectionListener(e -> itemSelected());
+        JScrollPane scroll = new JScrollPane(aircrafts);
+        scroll.setPreferredSize(new Dimension(500, 300));
+        scroll.setMinimumSize(new Dimension(500, 300));
 
-  @Override
-  public void actionPerformed(ActionEvent e) {
-      if (e.getSource() == foundFault){
-        String fault;
-        while (true){
-            fault = JOptionPane.showInputDialog("Enter The Fault Found!");
-            if (fault.isEmpty()){
-              JOptionPane.showMessageDialog(null, "Please Enter A Fault");
-            } else if (fault == null){
-              break;
-            }
-            break;
-          }
-        if (fault == null){
-          return;
+        listPanel.add(scroll);
+
+        listModelOfManagement.setSize(aircraftManagementDatabase.maxMRs);
+
+        updateRecords();
+        //Adds the list to the JFrame.
+        window.add(listPanel);
+        setVisible(true);
+        itemSelected();
+
+        //Adds LATC as an observer.
+        aircraftManagementDatabase.addObserver(this);
+    }//END CONSTRUCTOR MaintenanceInspector
+
+    /**
+     * Updates the JList to add the Management Records depending on the status of the flight.
+     */
+    private void updateRecords() {
+        //Goes through and adds all of the records held in the aircraft database.
+        for (int i = 0; i < aircraftManagementDatabase.maxMRs; i++) {
+            ManagementRecord managementRecord = aircraftManagementDatabase.getMR(i);
+            if (managementRecord == null) {
+                listModelOfManagement.set(i, null);
+            } else if (managementRecord.getStatus(managementRecord.getStatus()).equalsIgnoreCase("FAULTY_AWAIT_CLEAN")
+                    || managementRecord.getStatus(managementRecord.getStatus()).equalsIgnoreCase("READY_CLEAN_AND_MAINT")
+                    || managementRecord.getStatus(managementRecord.getStatus()).equalsIgnoreCase("CLEAN_AWAIT_MAINT")
+                    || managementRecord.getStatus(managementRecord.getStatus()).equalsIgnoreCase("OK_AWAIT_CLEAN")
+                    || managementRecord.getStatus(managementRecord.getStatus()).equalsIgnoreCase("AWAIT_REPAIR")) { //Depending on the status the record will be added to the JList.
+                listModelOfManagement.set(i, managementRecord);
+            }//END IF/ELSE
+        } //END FOR
+    }//END METHOD addRecords
+
+    /**
+     * Depending on if the user has selected a record or not the flight code and status of the selected record
+     * or will show unknown.
+     */
+    private void itemSelected() {
+        //Checks to see if the aircraft values isn't currently changing.
+        if (!aircrafts.getValueIsAdjusting()) {
+            //If the user hasn't selected a flight.
+            if (aircrafts.getSelectedValue() == null) {
+                managementRecordIndex = -1;
+                flightCodes.setText("UNKNOWN");
+                flightStatus.setText("UNKNOWN");
+                //Will turn off the buttons as there is no record selected.
+                if (buttonAvaliablity) {
+                    buttonAvaliablity = false;
+                }//END IF
+                updateButtons();
+            } else { //If the user has selected a flight.
+                //Gets the management record selected and sets the labels to show the flight code and flight status.
+                managementRecordIndex = aircrafts.getSelectedIndex();
+                flightCodes.setText(aircraftManagementDatabase.getFlightCode(managementRecordIndex));
+                flightStatus.setText(aircraftManagementDatabase.getStatus(managementRecordIndex));
+                //Will turn on buttons depending on the records status.
+                if (!buttonAvaliablity) {
+                    buttonAvaliablity = true;
+                }//END IF
+                updateButtons();
+            }//END IF/ELSE
+        }//END IF
+    }//END METHOD itemSelected
+
+    /**
+     * Will allow the user to click on the buttons depending on the status of the flight.
+     */
+    private void updateButtons() {
+        //Checks to see if the user has clicked on a record.
+        if (!buttonAvaliablity) {
+            allDone.setEnabled(false);
+            foundFault.setEnabled(false);
+            awaitingCleaning.setEnabled(false);
+            faultFoundAwait.setEnabled(false);
         } else {
-          aircraftManagementDatabase.faultsFound(managementRecordIndex, fault);
-        }
-      }
+            //Finds out the status of the record.
+            String status = aircraftManagementDatabase.getStatus(managementRecordIndex);
 
-      if (e.getSource() == awaitingCleaning){
-        aircraftManagementDatabase.setStatus(managementRecordIndex, 11);
-      }
+            //Depending on the status of the flight the button will either turn on or off.
+            if (status.equalsIgnoreCase("CLEAN_AWAIT_MAINT")) {
+                allDone.setEnabled(true);
+            } else {
+                allDone.setEnabled(false);
+            }//END IF/ELSE
 
-      if (e.getSource() == faultFoundAwait){
-        aircraftManagementDatabase.setStatus(managementRecordIndex, 12);
-      }
+            if (status.equalsIgnoreCase("READY_CLEAN_AND_MAINT") || status.equalsIgnoreCase("CLEAN_AWAIT_MAINT")) {
+                foundFault.setEnabled(true);
+            } else {
+                foundFault.setEnabled(false);
+            }//END IF/ELSE
 
-      if (e.getSource() == allDone){
-        aircraftManagementDatabase.setStatus(managementRecordIndex, 13);
-      }
+            if (status.equalsIgnoreCase("READY_CLEAN_AND_MAINT")) {
+                awaitingCleaning.setEnabled(true);
+            } else {
+                awaitingCleaning.setEnabled(false);
+            }//END IF/ELSE
 
-  }
+            if (status.equalsIgnoreCase("FAULTY_AWAIT_CLEAN")) {
+                faultFoundAwait.setEnabled(true);
+            } else {
+                faultFoundAwait.setEnabled(false);
+            }//END IF/ELSE
+        }//END IF/ELSE
+    }//END METHOD updateButton
 
-  @Override
-  public void update(Observable o, Object arg) {
-    updateRecords();
-    itemSelected();
-  }
-}
+    /**
+     * Checks to see what button has been clicked, it will do the corresponding action.
+     *
+     * @param e {@inheritDoc}
+     */
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        //If a fault has been found.
+        if (e.getSource() == foundFault) {
+            String fault;
+            //Will get the faults description.
+            while (true) {
+                try {
+                    //Gets the description from the user.
+                    fault = JOptionPane.showInputDialog("Enter The Fault Found!");
+                    if (fault.isEmpty()) {//Checks to see if the fault description is empty.
+                        JOptionPane.showMessageDialog(null, "Please Enter A Fault");
+                    }//END IF
+                    break;
+                } catch (NullPointerException e1){
+                    //If the user has exited the JOptionPane through cancel or the x button.
+                    return;
+                }//END TRY/CATCH
+            }//END WHILE
+                aircraftManagementDatabase.faultsFound(managementRecordIndex, fault);
+        }//END IF
+
+        //Awaits cleaning to be finished.
+        if (e.getSource() == awaitingCleaning) {
+            aircraftManagementDatabase.setStatus(managementRecordIndex, 11);
+        }//END IF
+
+        //Waits for cleaning to finish to work on repairs.
+        if (e.getSource() == faultFoundAwait) {
+            aircraftManagementDatabase.setStatus(managementRecordIndex, 12);
+        }//END IF
+
+        //Finished Maintenance Check.
+        if (e.getSource() == allDone) {
+            aircraftManagementDatabase.setStatus(managementRecordIndex, 13);
+        }//END IF
+    }//END METHOD actionPerformed
+
+    /**
+     * Used to update the JFrame and JList depending on the changes.
+     *
+     * @param o   {@inheritDoc}
+     * @param arg {@inheritDoc}
+     */
+    @Override
+    public void update(Observable o, Object arg) {
+        updateRecords();
+        itemSelected();
+    }//END METHOD update
+}//END CLASS MaintenanceInspector

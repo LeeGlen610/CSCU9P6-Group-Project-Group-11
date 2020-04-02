@@ -31,8 +31,8 @@ public class Itinerary {
     /**
      * Return the from attribute.
      *
-     * @tgGet
      * @return The Location The Plane Came From.
+     * @tgGet
      */
     public String getFrom() {
         return from;
@@ -41,8 +41,8 @@ public class Itinerary {
     /**
      * Return the to attribute.
      *
-     * @tgGet
      * @return The Location The Plane Is Landing At.
+     * @tgGet
      */
     public String getTo() {
         return to;
@@ -56,8 +56,8 @@ public class Itinerary {
     /**
      * Return the next attribute.
      *
-     * @tgGet
      * @return The Location The Plane Is Going To Next.
+     * @tgGet
      */
     public String getNext() {
         return next;

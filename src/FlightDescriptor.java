@@ -5,75 +5,85 @@
  * Contains all details of a flight: the flight code, itinerary and passenger list.
  * This is the package of information downloaded from an aircraft by the RadarTransceiver as the aircraft enters Stirling Airport's airspace.
  * Not obvious from the class diagram is that the RadarTransceiver boundary class should construct a FlightDescriptor when it "detects" an aircraft, and passes that object to the AircraftManagementDatabase as the parameter of a radarDetect message. (Since this will probably/possibly be local to an event handler method in RadarTransceiver, there is no attribute association from RadarTransceiver to FlightDescriptor.)
+ *
  * @stereotype entity
  * @url element://model:project::SAAMS/design:node:::id3oolzcko4qme4cko4sx40.node173
  * @url element://model:project::SAAMS/design:view:::id3oolzcko4qme4cko4sx40
  * @url element://model:project::SAAMS/design:view:::id15rnfcko4qme4cko4swib
  */
 public class FlightDescriptor {
-  /**
-   * Constructor: A new FlightDescriptor must be given a flightCode (String), an Itinerary,
-   * and the current PassengerList.
-   * @param flightCode The Flight Code of The Flight.
-   * @param itinerary The Itinerary of The Flight.
-   * @param list The Passengers That Are On The Flight.
-   */
-  public FlightDescriptor(String flightCode, Itinerary itinerary, PassengerList list){
-    this.flightCode = flightCode;
-    this.itinerary = itinerary;
-    this.list = list;
-  } //END CONSTRUCTOR FlightDescriptor.
+    /**
+     * Constructor: A new FlightDescriptor must be given a flightCode (String), an Itinerary,
+     * and the current PassengerList.
+     *
+     * @param flightCode The Flight Code of The Flight.
+     * @param itinerary  The Itinerary of The Flight.
+     * @param list       The Passengers That Are On The Flight.
+     */
+    public FlightDescriptor(String flightCode, Itinerary itinerary, PassengerList list) {
+        this.flightCode = flightCode;
+        this.itinerary = itinerary;
+        this.list = list;
+    } //END CONSTRUCTOR FlightDescriptor.
 
-  /**
-   * Returns the passengers list.
-   * @return The Passenger List.
-   */
-  public PassengerList getList() {
-    return list;
-  }//END METHOD getList
+    /**
+     * Returns the passengers list.
+     *
+     * @return The Passenger List.
+     */
+    public PassengerList getList() {
+        return list;
+    }//END METHOD getList
 
-  /**
-   * Returns the itinerary of the plane.
-   * @return The Itinerary of the plane.
-   */
-  public Itinerary getItinerary() {
-    return itinerary;
-  } //END METHOD getItinerary
+    /**
+     * Returns the itinerary of the plane.
+     *
+     * @return The Itinerary of the plane.
+     */
+    public Itinerary getItinerary() {
+        return itinerary;
+    } //END METHOD getItinerary
 
 
-  /**
-   * Returns the flight code of the plane.
-   * @return The Flight Code.
-   */
-  public String getFlightCode() {
-    return flightCode;
-  } //END METHOD getFlightCode
+    /**
+     * Returns the flight code of the plane.
+     *
+     * @return The Flight Code.
+     */
+    public String getFlightCode() {
+        return flightCode;
+    } //END METHOD getFlightCode
 
-  /**
-   * Each Flight Descriptor contains a list of passengers on the flight.
-   * @link aggregation
-   * @clientCardinality 1
-   * @supplierCardinality 1
-   * @label contains
-   * @directed*/
-  private PassengerList list;
+    /**
+     * Each Flight Descriptor contains a list of passengers on the flight.
+     *
+     * @link aggregation
+     * @clientCardinality 1
+     * @supplierCardinality 1
+     * @label contains
+     * @directed
+     */
+    private PassengerList list;
 
-  /**
-   * Each Flight Descriptor contains a flight Itinerary..
-   * @link aggregation
-   * @clientCardinality 1
-   * @supplierCardinality 1
-   * @label contains
-   * @directed*/
-  private Itinerary itinerary;
+    /**
+     * Each Flight Descriptor contains a flight Itinerary..
+     *
+     * @link aggregation
+     * @clientCardinality 1
+     * @supplierCardinality 1
+     * @label contains
+     * @directed
+     */
+    private Itinerary itinerary;
 
-/**
- * A short string identifying the flight:
- *
- * Usually airline abbreviation plus number, e.g. BA127.
- * Obtained from flight descriptor when aircraft is first detected.
- *
- * This is the code used in timetables, and is useful to show on public information screens.*/
-  private String flightCode;
+    /**
+     * A short string identifying the flight:
+     * <p>
+     * Usually airline abbreviation plus number, e.g. BA127.
+     * Obtained from flight descriptor when aircraft is first detected.
+     * <p>
+     * This is the code used in timetables, and is useful to show on public information screens.
+     */
+    private String flightCode;
 
 } //END CLASS FlightDescriptor

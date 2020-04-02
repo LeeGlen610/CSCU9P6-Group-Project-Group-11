@@ -15,98 +15,161 @@ import java.util.Observer;
  * Display of useful information about aircraft.
  * This class registers as an observer of the AircraftManagementDatabase, and is notified whenever any change occurs in that <<model>> element.
  * See written documentation.
+ *
  * @stereotype boundary/view
  * @url element://model:project::SAAMS/design:view:::id28ykdcko4qme4cko4sx0e
  * @url element://model:project::SAAMS/design:view:::id15rnfcko4qme4cko4swib
  */
 public class PublicInfo extends JFrame implements Observer {
-  /**
-  * Each Public Information Screen interface has access to the AircraftManagementDatabase.
-  * @supplierCardinality 1
-  * @clientCardinality 0..*
-  * @label accesses/observes
-  * @directed*/
-  private AircraftManagementDatabase aircraftManagementDatabase;
-  private JLabel labelForFlightStatus;
-  private JLabel flightStatus;
-  private JLabel labelForFlightCodes;
-  private JLabel flightCodes;
-  private JPanel listPanel;
-  private JList<ManagementRecord> aircrafts;
-  private DefaultListModel<ManagementRecord> listModelOfManagement;
-  private int managementRecordIndex = -1;
+    /**
+     * Each Public Information Screen interface has access to the AircraftManagementDatabase.
+     *
+     * @supplierCardinality 1
+     * @clientCardinality 0..*
+     * @label accesses/observes
+     * @directed
+     */
+    private AircraftManagementDatabase aircraftManagementDatabase;
 
-  public PublicInfo(AircraftManagementDatabase aircraftManagementDatabase) {
-    this.aircraftManagementDatabase = aircraftManagementDatabase;
+    /**
+     * Label for the flight codes.
+     */
+    private JLabel labelForFlightCodes;
 
-    setTitle("Public Info View");
-    setLocation(150, 150);
-    setSize(550, 500);
-    Container window = getContentPane();
-    window.setLayout(new FlowLayout());
+    /**
+     * Label to be used by the flight code.
+     */
+    private JLabel flightCodes;
 
-    labelForFlightCodes = new JLabel("Flight Code: ");
-    window.add(labelForFlightCodes);
-    flightCodes = new JLabel("");
-    window.add(flightCodes);
+    /**
+     * Label for the flight status.
+     */
+    private JLabel labelForFlightStatus;
 
-    labelForFlightStatus = new JLabel("Flight Status: ");
-    window.add(labelForFlightStatus);
-    flightStatus = new JLabel("");
-    window.add(flightStatus);
+    /**
+     * label to be used by the flight status.
+     */
+    private JLabel flightStatus;
 
-    listPanel = new JPanel();
+    /**
+     * The panel that will be hold the JList.
+     */
+    private JPanel listPanel;
 
-    listModelOfManagement = new DefaultListModel<ManagementRecord>();
+    /**
+     * The JList for the Management Records.
+     */
+    private JList<ManagementRecord> aircrafts;
 
-    aircrafts = new JList<>(listModelOfManagement);
+    /**
+     * The items of the JList - Management Records.
+     */
+    private DefaultListModel<ManagementRecord> listModelOfManagement;
 
-    aircrafts.addListSelectionListener(e -> itemSelected());
+    /**
+     * The index of the selected management record.
+     */
+    private int managementRecordIndex = -1;
 
-    JScrollPane scroll = new JScrollPane(aircrafts);
+    /**
+     * Constructor for PublicInfo for the view for it.
+     *
+     * @param aircraftManagementDatabase
+     */
+    public PublicInfo(AircraftManagementDatabase aircraftManagementDatabase) {
+        //Initialises the database held.
+        this.aircraftManagementDatabase = aircraftManagementDatabase;
 
-    scroll.setPreferredSize(new Dimension(500, 300));
-    scroll.setMinimumSize(new Dimension(500, 300));
+        //Initialise the JFrame.
+        setTitle("Public Info View");
+        setLocation(150, 150);
+        setSize(550, 500);
+        Container window = getContentPane();
+        window.setLayout(new FlowLayout());
 
-    listPanel.add(scroll);
+        //Create the labels for the frame.
+        labelForFlightCodes = new JLabel("Flight Code: ");
+        window.add(labelForFlightCodes);
+        flightCodes = new JLabel("");
+        window.add(flightCodes);
 
-    listModelOfManagement.setSize(aircraftManagementDatabase.maxMRs);
+        labelForFlightStatus = new JLabel("Flight Status: ");
+        window.add(labelForFlightStatus);
+        flightStatus = new JLabel("");
+        window.add(flightStatus);
 
-    updateRecords();
-    window.add(listPanel);
-    setVisible(true);
+        //Create the JList for the management records.
+        listPanel = new JPanel();
 
-    aircraftManagementDatabase.addObserver(this);
-  }
+        listModelOfManagement = new DefaultListModel<ManagementRecord>();
 
-  private void updateRecords() {
-    for (int i = 0; i < aircraftManagementDatabase.maxMRs; i++) {
-        ManagementRecord managementRecord = aircraftManagementDatabase.getMR(i);
+        aircrafts = new JList<>(listModelOfManagement);
 
-        if (managementRecord == null){
-          listModelOfManagement.set(i, null);
-        } else {
-          listModelOfManagement.set(i, managementRecord);
-        }
-    }
-  }
+        aircrafts.addListSelectionListener(e -> itemSelected());
 
-  private void itemSelected() {
-    if (!aircrafts.getValueIsAdjusting()) {
-      if (aircrafts.getSelectedValue() == null) {
-        managementRecordIndex = -1;
-        flightCodes.setText("UNKNOWN");
-        flightStatus.setText("UNKNOWN");
-      } else {
-        managementRecordIndex = aircrafts.getSelectedIndex();
-        flightCodes.setText(aircraftManagementDatabase.getFlightCode(managementRecordIndex));
-        flightStatus.setText(aircraftManagementDatabase.getStatus(managementRecordIndex));
-      }
-    }
-  }
+        JScrollPane scroll = new JScrollPane(aircrafts);
 
-  @Override
-  public void update(Observable o, Object arg) {
-      updateRecords();
-  }
-}
+        scroll.setPreferredSize(new Dimension(500, 300));
+        scroll.setMinimumSize(new Dimension(500, 300));
+
+        listPanel.add(scroll);
+
+        listModelOfManagement.setSize(aircraftManagementDatabase.maxMRs);
+
+        updateRecords();
+        window.add(listPanel);
+        setVisible(true);
+
+        //Adds PublicInfo as an observer.
+        aircraftManagementDatabase.addObserver(this);
+    }//END CONSTRUCTOR PublicInfo
+
+    /**
+     * Updates the JList to add the Management Records.
+     */
+    private void updateRecords() {
+        //Goes through and adds all of the records held in the aircraft database.
+        for (int i = 0; i < aircraftManagementDatabase.maxMRs; i++) {
+            ManagementRecord managementRecord = aircraftManagementDatabase.getMR(i);
+
+            if (managementRecord == null) {
+                listModelOfManagement.set(i, null);
+            } else {
+                listModelOfManagement.set(i, managementRecord);
+            }//END IF/ELSE
+        }//END FOR
+    }//END METHOD updateRecords
+
+    /**
+     * Depending on if the user has selected a record or not the flight code and status of the selected record
+     * or will show unknown.
+     */
+    private void itemSelected() {
+        //Checks to see if the aircraft values isn't currently changing.
+        if (!aircrafts.getValueIsAdjusting()) {
+            //If the user hasn't selected a flight.
+            if (aircrafts.getSelectedValue() == null) {
+                //Will set the values of the variables to represent an unknown record.
+                managementRecordIndex = -1;
+                flightCodes.setText("UNKNOWN");
+                flightStatus.setText("UNKNOWN");
+            } else { //If the user has selected a flight.
+                //Gets the management record selected and sets the labels to show the flight code and flight status.
+                managementRecordIndex = aircrafts.getSelectedIndex();
+                flightCodes.setText(aircraftManagementDatabase.getFlightCode(managementRecordIndex));
+                flightStatus.setText(aircraftManagementDatabase.getStatus(managementRecordIndex));
+            }//END IF/ELSE
+        }//END IF
+    }//END METHOD itemSelected
+
+    /**
+     * Used to update the JFrame and JList depending on the changes.
+     *
+     * @param o   {@inheritDoc}
+     * @param arg {@inheritDoc}
+     */
+    @Override
+    public void update(Observable o, Object arg) {
+        updateRecords();
+    }//END METHOD update
+}//END CLASS PublicInfo

@@ -18,298 +18,301 @@ import java.util.Observer;
  * This class also registers as an observer of the GateInfoDatabase and the
  * AircraftManagementDatabase, and is notified whenever any change occurs in those <<model>> elements.
  * See written documentation.
+ *
  * @stereotype boundary/view/controller
  * @url element://model:project::SAAMS/design:view:::id1un8dcko4qme4cko4sw27
  * @url element://model:project::SAAMS/design:view:::id1jkohcko4qme4cko4svww
  * @url element://model:project::SAAMS/design:node:::id1un8dcko4qme4cko4sw27.node61
  */
 public class GateConsole extends JFrame implements Observer, ActionListener {
-/**
-  *  The GateConsole interface has access to the GateInfoDatabase.
-  * @supplierCardinality 1
-  * @clientCardinality 0..*
-  * @label accesses/observes
-  * @directed*/
-  GateInfoDatabase gateInfoDatabase;
+    /**
+     * The GateConsole interface has access to the GateInfoDatabase.
+     *
+     * @supplierCardinality 1
+     * @clientCardinality 0..*
+     * @label accesses/observes
+     * @directed
+     */
+    GateInfoDatabase gateInfoDatabase;
 
-/**
-  *  The GateConsole interface has access to the AircraftManagementDatabase.
-  * @supplierCardinality 1
-  * @clientCardinality 0..*
-  * @directed
-  * @label accesses/observes*/
-  private AircraftManagementDatabase aircraftManagementDatabase;
+    /**
+     * The GateConsole interface has access to the AircraftManagementDatabase.
+     *
+     * @supplierCardinality 1
+     * @clientCardinality 0..*
+     * @directed
+     * @label accesses/observes
+     */
+    private AircraftManagementDatabase aircraftManagementDatabase;
 
-/**
- * This gate's gateNumber
- * - for identifying this gate's information in the GateInfoDatabase.
- */
-  private int gateNumber;
+    /**
+     * This gate's gateNumber
+     * - for identifying this gate's information in the GateInfoDatabase.
+     */
+    private int gateNumber;
 
-  /**
-   * Index number of the assigned management record
-   */
-  private int managementRecordIndex = -1;
+    /**
+     * Index number of the assigned management record
+     */
+    private int managementRecordIndex = -1;
 
-  /**
-   * Assigned management record
-   */
-  private ManagementRecord assignedMR;
-
-
-  private JButton buttonDocked;
-  private JButton buttonDisembarked;
-  private JButton buttonAddPassenger;
-  private JButton buttonBoardingComplete;
-  private JButton buttonShowPassengers;
-  private JButton buttonShowFlightInfo;
-
-  private JLabel gateStatusLabel;
-  private JLabel gateStatus;
-  private JLabel labelFlightCode;
-  private JLabel flightCode;
-  private JLabel labelFlightStatus;
-  private JLabel flightStatus;
-
-  private JPanel listPanel = new JPanel();
-  private JList<ManagementRecord> aircrafts;
-  private DefaultListModel<ManagementRecord> listModelOfManagement;
-  private JScrollPane scroll;
-
-  public GateConsole(AircraftManagementDatabase aircraftManagementDatabase, GateInfoDatabase gateInfoDatabase, int gateNumber) {
-    this.gateInfoDatabase = gateInfoDatabase;
-    this.aircraftManagementDatabase = aircraftManagementDatabase;
-    this.gateNumber = gateNumber;
+    /**
+     * Assigned management record
+     */
+    private ManagementRecord assignedMR;
 
 
-    setTitle("Gate Console View for Gate " + gateNumber);
-    setLocation(100, 50);
-    setSize(700, 400);
-    Container window = getContentPane();
-    window.setLayout(new FlowLayout());
+    private JButton buttonDocked;
+    private JButton buttonDisembarked;
+    private JButton buttonAddPassenger;
+    private JButton buttonBoardingComplete;
+    private JButton buttonShowPassengers;
+    private JButton buttonShowFlightInfo;
+
+    private JLabel gateStatusLabel;
+    private JLabel gateStatus;
+    private JLabel labelFlightCode;
+    private JLabel flightCode;
+    private JLabel labelFlightStatus;
+    private JLabel flightStatus;
+
+    private JPanel listPanel = new JPanel();
+    private JList<ManagementRecord> aircrafts;
+    private DefaultListModel<ManagementRecord> listModelOfManagement;
+    private JScrollPane scroll;
+
+    public GateConsole(AircraftManagementDatabase aircraftManagementDatabase, GateInfoDatabase gateInfoDatabase, int gateNumber) {
+        this.gateInfoDatabase = gateInfoDatabase;
+        this.aircraftManagementDatabase = aircraftManagementDatabase;
+        this.gateNumber = gateNumber;
 
 
-    gateStatusLabel = new JLabel("Gate Status:");
-    window.add(gateStatusLabel);
-    gateStatus = new JLabel("");
-    window.add(gateStatus);
-
-    labelFlightCode = new JLabel("Flight Code:");
-    window.add(labelFlightCode);
-    flightCode = new JLabel("");
-    window.add(flightCode);
-
-    labelFlightStatus = new JLabel("Flight Status:");
-    window.add(labelFlightStatus);
-    flightStatus = new JLabel("");
-    window.add(flightStatus);
-
-    buttonDocked = new JButton("Dock Aircraft");
-    window.add(buttonDocked);
-    buttonDocked.addActionListener(this);
-
-    buttonDisembarked = new JButton("Disembark Complete");
-    window.add(buttonDisembarked);
-    buttonDisembarked.addActionListener(this);
-
-    buttonAddPassenger = new JButton("Add Passenger");
-    window.add(buttonAddPassenger);
-    buttonAddPassenger.addActionListener(this);
-
-    buttonBoardingComplete = new JButton("Boarding Complete");
-    window.add(buttonBoardingComplete);
-    buttonBoardingComplete.addActionListener(this);
-
-    buttonShowPassengers = new JButton("Show Passengers");
-    window.add(buttonShowPassengers);
-    buttonShowPassengers.addActionListener(this);
-
-    buttonShowFlightInfo = new JButton("Show Flight Info");
-    window.add(buttonShowFlightInfo);
-    buttonShowFlightInfo.addActionListener(this);
+        setTitle("Gate Console View for Gate " + gateNumber);
+        setLocation(100, 50);
+        setSize(700, 400);
+        Container window = getContentPane();
+        window.setLayout(new FlowLayout());
 
 
-    listModelOfManagement = new DefaultListModel<ManagementRecord>();
+        gateStatusLabel = new JLabel("Gate Status:");
+        window.add(gateStatusLabel);
+        gateStatus = new JLabel("");
+        window.add(gateStatus);
 
-    aircrafts = new JList<>(listModelOfManagement);
-    // add a list listener - to check if an item has been selected
-    aircrafts.addListSelectionListener(evt -> itemSelected());
+        labelFlightCode = new JLabel("Flight Code:");
+        window.add(labelFlightCode);
+        flightCode = new JLabel("");
+        window.add(flightCode);
 
-    scroll = new JScrollPane(aircrafts);
+        labelFlightStatus = new JLabel("Flight Status:");
+        window.add(labelFlightStatus);
+        flightStatus = new JLabel("");
+        window.add(flightStatus);
 
-    scroll.setPreferredSize(new Dimension(400, 100));
-    scroll.setMinimumSize(new Dimension(400, 100));
+        buttonDocked = new JButton("Dock Aircraft");
+        window.add(buttonDocked);
+        buttonDocked.addActionListener(this);
 
-    listPanel.add(scroll);
-    window.add(listPanel);
+        buttonDisembarked = new JButton("Disembark Complete");
+        window.add(buttonDisembarked);
+        buttonDisembarked.addActionListener(this);
 
-    listModelOfManagement.setSize(aircraftManagementDatabase.maxMRs);
+        buttonAddPassenger = new JButton("Add Passenger");
+        window.add(buttonAddPassenger);
+        buttonAddPassenger.addActionListener(this);
 
-    setVisible(true);
+        buttonBoardingComplete = new JButton("Boarding Complete");
+        window.add(buttonBoardingComplete);
+        buttonBoardingComplete.addActionListener(this);
+
+        buttonShowPassengers = new JButton("Show Passengers");
+        window.add(buttonShowPassengers);
+        buttonShowPassengers.addActionListener(this);
+
+        buttonShowFlightInfo = new JButton("Show Flight Info");
+        window.add(buttonShowFlightInfo);
+        buttonShowFlightInfo.addActionListener(this);
 
 
+        listModelOfManagement = new DefaultListModel<ManagementRecord>();
 
-    updateRecords();
-    itemSelected();
-    updateGateStatusLabel();
+        aircrafts = new JList<>(listModelOfManagement);
+        // add a list listener - to check if an item has been selected
+        aircrafts.addListSelectionListener(evt -> itemSelected());
+
+        scroll = new JScrollPane(aircrafts);
+
+        scroll.setPreferredSize(new Dimension(400, 100));
+        scroll.setMinimumSize(new Dimension(400, 100));
+
+        listPanel.add(scroll);
+        window.add(listPanel);
+
+        listModelOfManagement.setSize(aircraftManagementDatabase.maxMRs);
+
+        setVisible(true);
 
 
-
-    gateInfoDatabase.addObserver(this);
-    aircraftManagementDatabase.addObserver(this);
-  }
-
-  /**
-   * Show flight information for flight selected in list
-   */
-  private void itemSelected() {
-    if (!aircrafts.getValueIsAdjusting()) {
-      if (aircrafts.getSelectedValue() == null) {
-        flightCode.setText("UNKNOWN");
-        flightStatus.setText("UNKNOWN");
+        updateRecords();
+        itemSelected();
         updateGateStatusLabel();
-        showButtons(false);
-      } else {
-        flightCode.setText(aircraftManagementDatabase.getFlightCode(managementRecordIndex));
-        gateStatus.setText(statusOfGate(gateInfoDatabase.getStatus(gateNumber)));
-        flightStatus.setText(aircraftManagementDatabase.getStatus(managementRecordIndex));
-        showButtons(true);
-      } //End if
-    } //End if
-  }
 
-  /**
-   * Enable buttons when necessary
-   *
-   * @param showButtons
-   */
-  private void showButtons(boolean showButtons){
-    if(!showButtons){
-      buttonDocked.setEnabled(showButtons);
-      buttonDisembarked.setEnabled(showButtons);
-      buttonAddPassenger.setEnabled(showButtons);
-      buttonBoardingComplete.setEnabled(showButtons);
-      buttonShowPassengers.setEnabled(showButtons);
-      buttonShowFlightInfo.setEnabled(showButtons);
-    } else{
-      int status = aircraftManagementDatabase.getMR(managementRecordIndex).getStatus();
 
-      buttonDocked.setEnabled(status == 6 && gateNumber == aircraftManagementDatabase.getGateNumber(managementRecordIndex));
-      buttonDisembarked.setEnabled(status == 7 && gateNumber == aircraftManagementDatabase.getGateNumber(managementRecordIndex));
-      buttonAddPassenger.setEnabled(status == 14 && gateNumber == aircraftManagementDatabase.getGateNumber(managementRecordIndex));
-      buttonBoardingComplete.setEnabled(status == 14 && gateNumber == aircraftManagementDatabase.getGateNumber(managementRecordIndex));
-      buttonShowFlightInfo.setEnabled(true);
-      buttonShowPassengers.setEnabled(true);
+        gateInfoDatabase.addObserver(this);
+        aircraftManagementDatabase.addObserver(this);
     }
-  }
 
-  /**
-   * Updates the labels on the gate console.
-   */
-  private void updateGateStatusLabel() {
-    int statusOfGate = gateInfoDatabase.getStatus(gateNumber); //status number of gate
-    gateStatus.setText(statusOfGate(statusOfGate)); //sets the text of the label for gate status
-  }
+    /**
+     * Show flight information for flight selected in list
+     */
+    private void itemSelected() {
+        if (!aircrafts.getValueIsAdjusting()) {
+            if (aircrafts.getSelectedValue() == null) {
+                flightCode.setText("UNKNOWN");
+                flightStatus.setText("UNKNOWN");
+                updateGateStatusLabel();
+                showButtons(false);
+            } else {
+                flightCode.setText(aircraftManagementDatabase.getFlightCode(managementRecordIndex));
+                gateStatus.setText(statusOfGate(gateInfoDatabase.getStatus(gateNumber)));
+                flightStatus.setText(aircraftManagementDatabase.getStatus(managementRecordIndex));
+                showButtons(true);
+            } //End if
+        } //End if
+    }
 
-  /**
-   * Returns the status of the gate as a text
-   *
-   * @param status Status number
-   * @return Status as text
-   */
-  private String statusOfGate(int status){
-    switch (status){
-      case 0:
-        return "FREE";
-      case 1:
-        return "RESERVED";
-      case 2:
-        return "OCCUPIED";
-      default:
-        return "UNKNOWN";
-    } //End switch
-  }
+    /**
+     * Enable buttons when necessary
+     *
+     * @param showButtons
+     */
+    private void showButtons(boolean showButtons) {
+        if (!showButtons) {
+            buttonDocked.setEnabled(showButtons);
+            buttonDisembarked.setEnabled(showButtons);
+            buttonAddPassenger.setEnabled(showButtons);
+            buttonBoardingComplete.setEnabled(showButtons);
+            buttonShowPassengers.setEnabled(showButtons);
+            buttonShowFlightInfo.setEnabled(showButtons);
+        } else {
+            int status = aircraftManagementDatabase.getMR(managementRecordIndex).getStatus();
 
-  /**
-   * Adds the assigned management record to the JList
-   */
-  private void updateRecords() {
-    //if the gate is not free
-    if(gateInfoDatabase.getStatus(gateNumber) != 0){
-      managementRecordIndex = gateInfoDatabase.assignedmCode(gateNumber); //get assigned management record mCode
-      assignedMR = aircraftManagementDatabase.getMR(managementRecordIndex); //get assigned management record
-    } //end if
+            buttonDocked.setEnabled(status == 6 && gateNumber == aircraftManagementDatabase.getGateNumber(managementRecordIndex));
+            buttonDisembarked.setEnabled(status == 7 && gateNumber == aircraftManagementDatabase.getGateNumber(managementRecordIndex));
+            buttonAddPassenger.setEnabled(status == 14 && gateNumber == aircraftManagementDatabase.getGateNumber(managementRecordIndex));
+            buttonBoardingComplete.setEnabled(status == 14 && gateNumber == aircraftManagementDatabase.getGateNumber(managementRecordIndex));
+            buttonShowFlightInfo.setEnabled(true);
+            buttonShowPassengers.setEnabled(true);
+        }
+    }
 
-    for(int i = 0; i < aircraftManagementDatabase.maxMRs; i++){
-      ManagementRecord MR = aircraftManagementDatabase.getMR(i);
+    /**
+     * Updates the labels on the gate console.
+     */
+    private void updateGateStatusLabel() {
+        int statusOfGate = gateInfoDatabase.getStatus(gateNumber); //status number of gate
+        gateStatus.setText(statusOfGate(statusOfGate)); //sets the text of the label for gate status
+    }
 
-      if(MR == null){
-        listModelOfManagement.set(i, null);
-      } else if(MR == assignedMR){
-        listModelOfManagement.set(i, MR);
-      } //End if
-    } //End for
-  }
+    /**
+     * Returns the status of the gate as a text
+     *
+     * @param status Status number
+     * @return Status as text
+     */
+    private String statusOfGate(int status) {
+        switch (status) {
+            case 0:
+                return "FREE";
+            case 1:
+                return "RESERVED";
+            case 2:
+                return "OCCUPIED";
+            default:
+                return "UNKNOWN";
+        } //End switch
+    }
 
-  @Override
-  public void update(Observable o, Object arg) {
-    updateRecords();
-    updateGateStatusLabel();
-    itemSelected();
-  }
+    /**
+     * Adds the assigned management record to the JList
+     */
+    private void updateRecords() {
+        //if the gate is not free
+        if (gateInfoDatabase.getStatus(gateNumber) != 0) {
+            managementRecordIndex = gateInfoDatabase.assignedmCode(gateNumber); //get assigned management record mCode
+            assignedMR = aircraftManagementDatabase.getMR(managementRecordIndex); //get assigned management record
+        } //end if
 
-  @Override
-  public void actionPerformed(ActionEvent e) {
-    if(e.getSource() == buttonDocked) {
-      aircraftManagementDatabase.setStatus(managementRecordIndex, 7);
-      gateInfoDatabase.docked(gateNumber);
-    } //end if
+        for (int i = 0; i < aircraftManagementDatabase.maxMRs; i++) {
+            ManagementRecord MR = aircraftManagementDatabase.getMR(i);
 
-    if(e.getSource() == buttonDisembarked){
-      aircraftManagementDatabase.clearPassengers(managementRecordIndex);
-      aircraftManagementDatabase.setStatus(managementRecordIndex, 8);
-    } //end if
+            if (MR == null) {
+                listModelOfManagement.set(i, null);
+            } else if (MR == assignedMR) {
+                listModelOfManagement.set(i, MR);
+            } //End if
+        } //End for
+    }
 
-    if(e.getSource() == buttonAddPassenger){
-      PassengerDetails passengerName = new PassengerDetails(showTextPrompt());
-      if(!passengerName.getName().isEmpty()){
-        aircraftManagementDatabase.addPassenger(managementRecordIndex, passengerName);
-      } else{
-        JOptionPane.showMessageDialog(null, "Error No Passenger Name Entered");
-      }
-    } //end if
+    @Override
+    public void update(Observable o, Object arg) {
+        updateRecords();
+        updateGateStatusLabel();
+        itemSelected();
+    }
 
-    if(e.getSource() == buttonBoardingComplete){
-      aircraftManagementDatabase.setStatus(managementRecordIndex, 15);
-      updateGateStatusLabel();
-    } //end if
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == buttonDocked) {
+            aircraftManagementDatabase.setStatus(managementRecordIndex, 7);
+            gateInfoDatabase.docked(gateNumber);
+        } //end if
 
-    if(e.getSource() == buttonShowFlightInfo){
-      int amountOfPassengers = aircraftManagementDatabase.getPassengerList(managementRecordIndex).getDetails().size();
+        if (e.getSource() == buttonDisembarked) {
+            aircraftManagementDatabase.clearPassengers(managementRecordIndex);
+            aircraftManagementDatabase.setStatus(managementRecordIndex, 8);
+        } //end if
 
-      JOptionPane.showMessageDialog(null, "Flight Code of Flight: " + aircraftManagementDatabase.getFlightCode(managementRecordIndex) +
-              "\nFlight Status: " + aircraftManagementDatabase.getStatus(managementRecordIndex) + "\nComing From: " +
-              aircraftManagementDatabase.getItinerary(managementRecordIndex).getFrom() + "\nGoing To: " + aircraftManagementDatabase.getItinerary(managementRecordIndex).getTo() +
-              "\nNext Destination: " + aircraftManagementDatabase.getItinerary(managementRecordIndex).getNext() + "\nNumber of Passengers on board: " + amountOfPassengers);
-    } //end if
+        if (e.getSource() == buttonAddPassenger) {
+            PassengerDetails passengerName = new PassengerDetails(showTextPrompt());
+            if (!passengerName.getName().isEmpty()) {
+                aircraftManagementDatabase.addPassenger(managementRecordIndex, passengerName);
+            } else {
+                JOptionPane.showMessageDialog(null, "Error No Passenger Name Entered");
+            }
+        } //end if
 
-    if(e.getSource() == buttonShowPassengers){
-      String passengers = "";
-      PassengerList list = aircraftManagementDatabase.getPassengerList(managementRecordIndex);
-      ArrayList<PassengerDetails> details = list.getDetails();
-      for(int i = 0; i < list.getDetails().size(); i++){
-        passengers = passengers + details.get(i).getName() + "\n";
-      } //end for
+        if (e.getSource() == buttonBoardingComplete) {
+            aircraftManagementDatabase.setStatus(managementRecordIndex, 15);
+            updateGateStatusLabel();
+        } //end if
 
-      JOptionPane.showMessageDialog(null, "Passengers:\n\n" + passengers);
-    } //end if
-  }
+        if (e.getSource() == buttonShowFlightInfo) {
+            int amountOfPassengers = aircraftManagementDatabase.getPassengerList(managementRecordIndex).getDetails().size();
 
-  /**
-   * Displays a text prompt for the user to enter text
-   */
-  public String showTextPrompt() {
-    String name = JOptionPane.showInputDialog("Passenger Name: ");
-    return name;
-  }
+            JOptionPane.showMessageDialog(null, "Flight Code of Flight: " + aircraftManagementDatabase.getFlightCode(managementRecordIndex) +
+                    "\nFlight Status: " + aircraftManagementDatabase.getStatus(managementRecordIndex) + "\nComing From: " +
+                    aircraftManagementDatabase.getItinerary(managementRecordIndex).getFrom() + "\nGoing To: " + aircraftManagementDatabase.getItinerary(managementRecordIndex).getTo() +
+                    "\nNext Destination: " + aircraftManagementDatabase.getItinerary(managementRecordIndex).getNext() + "\nNumber of Passengers on board: " + amountOfPassengers);
+        } //end if
+
+        if (e.getSource() == buttonShowPassengers) {
+            String passengers = "";
+            PassengerList list = aircraftManagementDatabase.getPassengerList(managementRecordIndex);
+            ArrayList<PassengerDetails> details = list.getDetails();
+            for (int i = 0; i < list.getDetails().size(); i++) {
+                passengers = passengers + details.get(i).getName() + "\n";
+            } //end for
+
+            JOptionPane.showMessageDialog(null, "Passengers:\n\n" + passengers);
+        } //end if
+    }
+
+    /**
+     * Displays a text prompt for the user to enter text
+     */
+    public String showTextPrompt() {
+        String name = JOptionPane.showInputDialog("Passenger Name: ");
+        return name;
+    }
 }

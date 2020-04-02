@@ -24,17 +24,63 @@ import java.util.Observer;
  * @url element://model:project::SAAMS/design:view:::idwwyucko4qme4cko4sgxi
  */
 public class LATC extends JFrame implements Observer, ActionListener {
+    /**
+     * The panel that will be hold the JList.
+     */
     private JPanel listPanel;
+
+    /**
+     * The JList for the Management Records.
+     */
     private JList<ManagementRecord> aircrafts;
+
+    /**
+     * The items of the JList - Management Records.
+     */
     private DefaultListModel<ManagementRecord> listModelOfManagement;
-    private JLabel flightStatus;
-    private JLabel labelForFlightStatus;
-    private JLabel flightCodes;
+    /**
+     * Label for the flight codes.
+     */
     private JLabel labelForFlightCodes;
+
+    /**
+     * Label to be used by the flight code.
+     */
+    private JLabel flightCodes;
+
+    /**
+     * Label for the flight status.
+     */
+    private JLabel labelForFlightStatus;
+
+    /**
+     * label to be used by the flight status.
+     */
+    private JLabel flightStatus;
+
+    /**
+     * To give the plane landing permission.
+     */
     private JButton landingGranted;
+
+    /**
+     * To give the plane take off permission.
+     */
     private JButton takeOffGranted;
+
+    /**
+     * To give the plane to confirm landing.
+     */
     private JButton confirm;
+
+    /**
+     * Waits for the taxi permission from GOC.
+     */
     private JButton waitingForTaxi;
+
+    /**
+     * To display the flight info of the pane.
+     */
     private JButton flightInfo;
     /**
      * The Local Air Traffic Controller Screen interface has access to the AircraftManagementDatabase.
@@ -48,15 +94,23 @@ public class LATC extends JFrame implements Observer, ActionListener {
     private int managementRecordIndex;
     private boolean buttonAvailability;
 
+    /**
+     * Constructor for LATC to make the view for it.
+     *
+     * @param aircraftManagementDatabase Holds All The Management Records.
+     */
     public LATC(AircraftManagementDatabase aircraftManagementDatabase) {
+        //Initialises the database held.
         this.aircraftManagementDatabase = aircraftManagementDatabase;
 
+        //Initialise the JFrame.
         setTitle("LATC View");
         setLocation(400, 600);
         setSize(1000, 700);
         Container window = getContentPane();
         window.setLayout(new FlowLayout());
 
+        //Create the labels for the frame.
         labelForFlightCodes = new JLabel("Flight Code: ");
         window.add(labelForFlightCodes);
         flightCodes = new JLabel("");
@@ -67,6 +121,7 @@ public class LATC extends JFrame implements Observer, ActionListener {
         flightStatus = new JLabel("");
         window.add(flightStatus);
 
+        //Create the buttons for the frame and uses the LATC as its action listener.
         landingGranted = new JButton("Give Landing Permission");
         window.add(landingGranted);
         landingGranted.addActionListener(this);
@@ -87,6 +142,7 @@ public class LATC extends JFrame implements Observer, ActionListener {
         window.add(flightInfo);
         flightInfo.addActionListener(this);
 
+        //Create the JList for the management records.
         listPanel = new JPanel();
 
         listModelOfManagement = new DefaultListModel<ManagementRecord>();
@@ -105,118 +161,153 @@ public class LATC extends JFrame implements Observer, ActionListener {
         listModelOfManagement.setSize(aircraftManagementDatabase.maxMRs);
 
         updateRecords();
-
+        //Adds the list to the JFrame.
         window.add(listPanel);
         itemSelected();
         setVisible(true);
 
+        //Adds LATC as an observer.
         aircraftManagementDatabase.addObserver(this);
-    }
+    }//END METHOD LATC
 
+    /**
+     * Updates the JList to add the Management Records depending on the status of the flight.
+     */
     private void updateRecords() {
+        //Goes through and adds all of the records held in the aircraft database.
         for (int i = 0; i < aircraftManagementDatabase.maxMRs; i++) {
             ManagementRecord managementRecord = aircraftManagementDatabase.getMR(i);
-
             if (managementRecord == null) {
                 listModelOfManagement.set(i, null);
             } else if (managementRecord.getStatus(managementRecord.getStatus()).equalsIgnoreCase("LANDING")
                     || managementRecord.getStatus(managementRecord.getStatus()).equalsIgnoreCase("DEPARTING_THROUGH_LOCAL_AIRSPACE")
                     || managementRecord.getStatus(managementRecord.getStatus()).equalsIgnoreCase("LANDED")
                     || managementRecord.getStatus(managementRecord.getStatus()).equalsIgnoreCase("AWAITING_TAXI")
-                    || managementRecord.getStatus(managementRecord.getStatus()).equalsIgnoreCase("GROUND_CLEARANCE_GRANTED")) {
+                    || managementRecord.getStatus(managementRecord.getStatus()).equalsIgnoreCase("GROUND_CLEARANCE_GRANTED")) { //Depending on the status the record will be added to the JList.
                 listModelOfManagement.set(i, managementRecord);
-            }
-        }
-    }
+            } //END IF/ELSE
+        }//END FOR
+    }//END METHOD updateRecords
 
+    /**
+     * Depending on if the user has selected a record or not the flight code and status of the selected record
+     * or will show unknown.
+     */
     private void itemSelected() {
+        //Checks to see if the aircraft values isn't currently changing.
         if (!aircrafts.getValueIsAdjusting()) {
+            //If the user hasn't selected a flight.
             if (aircrafts.getSelectedValue() == null) {
+                //Will set the values of the variables to represent an unknown record.
                 managementRecordIndex = -1;
                 flightCodes.setText("UNKNOWN");
                 flightStatus.setText("UNKNOWN");
+                //Will turn off the buttons as there is no record selected.
                 if (buttonAvailability) {
                     buttonAvailability = false;
-                }
+                } //END IF
                 updateButtons();
-            } else {
+            } else { //If the user has selected a flight.
+                //Gets the management record selected and sets the labels to show the flight code and flight status.
                 managementRecordIndex = aircrafts.getSelectedIndex();
                 flightCodes.setText(aircraftManagementDatabase.getFlightCode(managementRecordIndex));
                 flightStatus.setText(aircraftManagementDatabase.getStatus(managementRecordIndex));
+                //Will turn on buttons depending on the records status.
                 if (!buttonAvailability) {
                     buttonAvailability = true;
-                }
+                } //END IF
                 updateButtons();
-            }
-        }
-    }
+            }//END IF/ELSE
+        }//END IF
+    }//END METHOD itemSelected
 
+    /**
+     * Will allow the user to click on the buttons depending on the status of the flight.
+     */
     private void updateButtons() {
-      if (!buttonAvailability){
-          landingGranted.setEnabled(false);
-        takeOffGranted.setEnabled(false);
-        confirm.setEnabled(false);
-        flightInfo.setEnabled(false);
-        waitingForTaxi.setEnabled(false);
-      } else {
-        String status = aircraftManagementDatabase.getStatus(managementRecordIndex);
-
-        if (status.equalsIgnoreCase("GROUND_CLEARANCE_GRANTED")){
-          landingGranted.setEnabled(true);
-        } else{
+        //Checks to see if the user has clicked on a record.
+        if (!buttonAvailability) {
             landingGranted.setEnabled(false);
-        }
-         if (status.equalsIgnoreCase("AWAITING_TAKEOFF")){
-          takeOffGranted.setEnabled(true);
-        } else {
             takeOffGranted.setEnabled(false);
-         }
-          if (status.equalsIgnoreCase("LANDING")){
-              confirm.setEnabled(true);
-          }else {
-              confirm.setEnabled(false);
-          }
-          if (status.equalsIgnoreCase("READY_DEPART")){
-              waitingForTaxi.setEnabled(true);
-          } else {
-              waitingForTaxi.setEnabled(false);
-          }
-        flightInfo.setEnabled(true);
-      }
-    }
+            confirm.setEnabled(false);
+            flightInfo.setEnabled(false);
+            waitingForTaxi.setEnabled(false);
+        } else {
+            //Finds out the status of the record.
+            String status = aircraftManagementDatabase.getStatus(managementRecordIndex);
 
+            //Depending on the status of the flight the button will either turn on or off.
+            if (status.equalsIgnoreCase("GROUND_CLEARANCE_GRANTED")) {
+                landingGranted.setEnabled(true);
+            } else {
+                landingGranted.setEnabled(false);
+            }//END IF/ELSE
+            if (status.equalsIgnoreCase("AWAITING_TAKEOFF")) {
+                takeOffGranted.setEnabled(true);
+            } else {
+                takeOffGranted.setEnabled(false);
+            }//END IF/ELSE
+            if (status.equalsIgnoreCase("LANDING")) {
+                confirm.setEnabled(true);
+            } else {
+                confirm.setEnabled(false);
+            }//END IF/ELSE
+            if (status.equalsIgnoreCase("READY_DEPART")) {
+                waitingForTaxi.setEnabled(true);
+            } else {
+                waitingForTaxi.setEnabled(false);
+            }//END IF/ELSE
+            flightInfo.setEnabled(true);
+        }//END IF/ELSE
+    }//END METHOD updateButtons
+
+    /**
+     * Used to update the JFrame and JList depending on the changes.
+     *
+     * @param observable {@inheritDoc}
+     * @param o          {@inheritDoc}
+     */
     @Override
     public void update(Observable observable, Object o) {
-       updateRecords();
-       itemSelected();
-    }
+        updateRecords();
+        itemSelected();
+    } //END METHOD update
 
+    /**
+     * Checks to see what button has been clicked, it will do the corresponding action.
+     *
+     * @param e {@inheritDoc}
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == landingGranted){
+        //Grants the aircraft landing permissions.
+        if (e.getSource() == landingGranted) {
             aircraftManagementDatabase.setStatus(managementRecordIndex, 4);
-        }
+        }//END IF
 
-        if (e.getSource() == confirm){
-          aircraftManagementDatabase.setStatus(managementRecordIndex, 5);
-        }
+        //Confirms the landing.
+        if (e.getSource() == confirm) {
+            aircraftManagementDatabase.setStatus(managementRecordIndex, 5);
+        }//END IF
 
-        if (e.getSource() == takeOffGranted){
-          aircraftManagementDatabase.setStatus(managementRecordIndex, 18);
-        }
+        //Gives take off permissions.
+        if (e.getSource() == takeOffGranted) {
+            aircraftManagementDatabase.setStatus(managementRecordIndex, 18);
+        }//END IF
 
-        if (e.getSource() == waitingForTaxi){
-          aircraftManagementDatabase.setStatus(managementRecordIndex, 16);
-        }
+        //Waits for taxi permissions.
+        if (e.getSource() == waitingForTaxi) {
+            aircraftManagementDatabase.setStatus(managementRecordIndex, 16);
+        }//END IF
 
-        if (e.getSource() == flightInfo){
+        //Gets the flight info of the flight.
+        if (e.getSource() == flightInfo) {
             int amountOfPassengers = aircraftManagementDatabase.getPassengerList(managementRecordIndex).getDetails().size();
 
             JOptionPane.showMessageDialog(null, "Flight Code of Flight: " + aircraftManagementDatabase.getFlightCode(managementRecordIndex) +
                     "\nFlight Status: " + aircraftManagementDatabase.getStatus(managementRecordIndex) + "\nComing From: " +
                     aircraftManagementDatabase.getItinerary(managementRecordIndex).getFrom() + "\nGoing To: " + aircraftManagementDatabase.getItinerary(managementRecordIndex).getTo() +
                     "\nNext Destination: " + aircraftManagementDatabase.getItinerary(managementRecordIndex).getNext() + "\nNumber of Passengers on board: " + amountOfPassengers);
-        }
-    }
-
-}
+        }//END IF
+    }//END METHOD actionPerformed
+}//END CLASS LATC

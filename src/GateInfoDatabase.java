@@ -82,8 +82,9 @@ public class GateInfoDatabase extends Observable {
 
     /**
      * Forward a status change request to the given gate identified by the gateNumber parameter. Called to allocate a free gate to the aircraft identified by mCode.
+     *
      * @param gateNumber The Gate That The Plane Will Allocate.
-     * @param mCode The MR's Index.
+     * @param mCode      The MR's Index.
      */
     public void allocate(int gateNumber, int mCode) {
         gates[gateNumber].allocate(mCode);
@@ -91,6 +92,7 @@ public class GateInfoDatabase extends Observable {
 
     /**
      * Forward a status change request to the given gate identified by the gateNumber parameter. Called to indicate that the expected aircraft has arrived at the gate.
+     *
      * @param gateNumber The Gate That The Plane Will Dock At.
      */
     public void docked(int gateNumber) {
@@ -99,6 +101,7 @@ public class GateInfoDatabase extends Observable {
 
     /**
      * Forward a status change request to the given gate identified by the gateNumber parameter. Called to indicate that the aircraft has departed and that the gate is now free.
+     *
      * @param gateNumber The Gate That The Plane Departed From.
      */
     public void departed(int gateNumber) {

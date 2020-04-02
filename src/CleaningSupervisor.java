@@ -58,8 +58,8 @@ public class CleaningSupervisor extends JFrame
         Container window = getContentPane();
         window.setLayout(new FlowLayout());
 
-        /**
-         * labels
+        /*
+          labels
          */
         labelForFlightCodes = new JLabel("Flight Code: ");
         window.add(labelForFlightCodes);
@@ -72,30 +72,30 @@ public class CleaningSupervisor extends JFrame
         window.add(flightStatus);
 
 
-        /**
-         * maintenance button
+        /*
+          maintenance button
          */
         awaitMaintenance = new JButton("Await Maintenance");
         window.add(awaitMaintenance);
         awaitMaintenance.addActionListener(this);
 
 
-        /**
-         * waiting for repair button
+        /*
+          waiting for repair button
          */
         awaitRepair = new JButton("Await Repair");
         window.add(awaitRepair);
         awaitRepair.addActionListener(this);
 
-        /**
-         * done cleaning button
+        /*
+          done cleaning button
          */
         doneCleaning = new JButton("Done Cleaning");
         window.add(doneCleaning);
         doneCleaning.addActionListener(this);
 
-        /**
-         * new list of aircrafts that need cleaning/repairs
+        /*
+          new list of aircrafts that need cleaning/repairs
          */
         listPanel = new JPanel();
         listModelOfManagement = new DefaultListModel<>();
@@ -111,8 +111,8 @@ public class CleaningSupervisor extends JFrame
         updateRecords();
         window.add(listPanel);
         itemSelected();
-        /**
-         * show labels, fields and buttons
+        /*
+          show labels, fields and buttons
          */
         setVisible(true);
         aircraftManagementDatabase.addObserver(this);

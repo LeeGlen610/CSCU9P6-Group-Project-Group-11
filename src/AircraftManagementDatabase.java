@@ -79,6 +79,7 @@ public class AircraftManagementDatabase extends Observable {
     /**
      * Return the flight code from the given MR supplied as a parameter.
      * The request is forwarded to the MR.
+     *
      * @param mCode The MR's Index.
      * @return The Flight Code of The Flight.
      */
@@ -219,6 +220,7 @@ public class AircraftManagementDatabase extends Observable {
 
     /**
      * Return the Itinerary of the aircraft with the given mCode.
+     *
      * @param mCode The MR's Index.
      * @return The Itinerary of The Flight.
      */

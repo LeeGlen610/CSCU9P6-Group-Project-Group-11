@@ -4,6 +4,7 @@
 /**
  * The details of an individual passenger: just a name for simplicity!
  * A PassengerList holds a collection of PassengerDetails.
+ *
  * @note One pasenger's personal details
  * @stereotype entity
  * @url element://model:project::SAAMS/design:view:::id1un8dcko4qme4cko4sw27
@@ -11,25 +12,27 @@
  * @url element://model:project::SAAMS/design:view:::id1jkohcko4qme4cko4svww
  */
 public class PassengerDetails {
-  /**
-   * Constructor: Just a name required.
-   * @param name The Name of The Passenger.
-   */
-  public PassengerDetails(String name){
-    this.name=name;
-  } //END CONSTRUCTOR PassengerDetails
+    /**
+     * Constructor: Just a name required.
+     *
+     * @param name The Name of The Passenger.
+     */
+    public PassengerDetails(String name) {
+        this.name = name;
+    } //END CONSTRUCTOR PassengerDetails
 
-  /**
-   * Return the name of this passenger.
-   * @return The Name of The Passenger.
-   */
-  public String getName(){
-    return name;
-  } //END METHOD getName
+    /**
+     * Return the name of this passenger.
+     *
+     * @return The Name of The Passenger.
+     */
+    public String getName() {
+        return name;
+    } //END METHOD getName
 
-  /**
-   * The passenger's name!
-   */
-  private String name;
+    /**
+     * The passenger's name!
+     */
+    private String name;
 
 }//END CLASS PassengerDetails

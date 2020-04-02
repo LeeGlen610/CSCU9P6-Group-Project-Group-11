@@ -34,6 +34,7 @@ public class PassengerList {
 
     /**
      * Returns the Passenger Details of the Flight.
+     *
      * @return The Passengers of The Flight.
      */
     public ArrayList<PassengerDetails> getDetails() {
@@ -44,15 +45,15 @@ public class PassengerList {
      * The given passenger is boarding.
      * Their details are recorded, in the passenger list.
      *
-     * @preconditions Status is READY_PASSENGERS
      * @param details The Passenger's Details.
+     * @preconditions Status is READY_PASSENGERS
      */
     public void addPassenger(PassengerDetails details) {
         this.details.add(details);
     } //END METHOD addPassenger
 
     /**
-     *Removes the passengers that are inside the ArrrayList.
+     * Removes the passengers that are inside the ArrrayList.
      */
     public void passengersLeft() {
         details = new ArrayList<>();
