@@ -222,11 +222,11 @@ public class GOC extends JFrame implements ActionListener, Observer {
 
     public String statusOfGate(int status){
         switch (status){
-            case 1:
+            case 0:
                 return "FREE";
-            case 2:
+            case 1:
                 return "RESERVED";
-            case 3:
+            case 2:
                 return "OCCUPIED";
             default:
                 return "UNKNOWN";
@@ -255,8 +255,8 @@ public class GOC extends JFrame implements ActionListener, Observer {
                 JOptionPane.showMessageDialog(null, "No gates are currently free!");
             } else {
                 gateInfoDatabase.allocate(recordIndex, managementRecordIndex);
-                aircraftManagementDatabase.taxiTo(recordIndex, managementRecordIndex);
-                aircraftManagementDatabase.setStatus(recordIndex, 6);
+                aircraftManagementDatabase.taxiTo(managementRecordIndex, recordIndex);
+                aircraftManagementDatabase.setStatus(managementRecordIndex, 6);
             }
 
         }

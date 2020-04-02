@@ -92,13 +92,11 @@ public class CleaningSupervisor extends JFrame
     window.add(labelForFlightCodes);
     flightStatus = new JLabel("");
     window.add(flightStatus);
-/**
- * show
- */
+    /**
+     * show labels, fields and buttons
+     */
     setVisible(true);
     show();
-
-
       /**
        * new list of aircrafts that need cleaning/repairs
        */
@@ -131,32 +129,18 @@ public class CleaningSupervisor extends JFrame
         awaitMaintenance.setEnabled(true);
       } else {
         awaitMaintenance.setEnabled(false);
-      }
+      } //end of else
       if (status.equalsIgnoreCase("AWAIT_REPAIR")) {
         awaitRepair.setEnabled(true);
       } else {
         awaitRepair.setEnabled(false);
-      }
+      } //end of else
       if (status.equalsIgnoreCase("OK_AWAIT_CLEAN")) {
         doneCleaning.setEnabled(true);
       } else {
         doneCleaning.setEnabled(false);
-      }
-//      if (status.equalsIgnoreCase(anotherString:"FAULTY_AWAIT_CLEAN")) {
-//        awaitMaintenance.setEnabled(true);
-//        awaitRepair.setEnabled(true);
-//      } else {
-//        awaitMaintenance.setEnabled(false);
-//        awaitRepair.setEnabled(false);
-//      }
-//      if (status.equalsIgnoreCase(anotherString:"CLEAN_AWAIT_MAINT")) {
-//        awaitMaintenance.setEnabled(true);
-//        doneCleaning.setEnabled(true);
-//      } else {
-//        awaitMaintenance.setEnabled(false);
-//        doneCleaning.setEnabled(false);
-//      }
-      }
+      } //end of else
+      }//end of else
   }//end of update buttons method
     /**
      * update records method
@@ -177,6 +161,14 @@ public class CleaningSupervisor extends JFrame
       }
     }
   }//end of update records method
+  /**
+   * item selected method
+   * if a specific value is pressed then it is highlighted as clicked on
+   * if button is not available to be clicked and if the value selected is null then set the index as empty (-1),
+   * and set the flight code and status to "unknown"
+   * else, set flight code and status from that index
+   * call update buttons method
+   */
   private void itemSelected() {
     if (!aircrafts.getValueIsAdjusting()) {
       if (aircrafts.getSelectedValue() == null) {

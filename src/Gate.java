@@ -29,7 +29,9 @@ public class Gate {
 	  if(status == FREE) {
 		  status = RESERVED;
 		  this.mCode = mCode;
-	  }//END IF
+	  } else {
+          throw new IllegalStateException("Gate is not FREE");
+      }//END IF
   }//END METHOD allocate
 
 /**
@@ -38,7 +40,9 @@ public class Gate {
   public void docked(){
 	  if(status == RESERVED) {
 		  status = OCCUPIED;
-	  }//END IF
+	  } else {
+          throw new IllegalStateException("Gate is not RESERVED");
+      }//END IF
   } //END METHOD docked
 
 /**
@@ -75,6 +79,8 @@ public class Gate {
     public void departed(){
         if(status == OCCUPIED) {
             status = FREE;
+        }else {
+            throw new IllegalStateException("Gate is not OCCUPIED");
         }//END IF
     }//END METHOD departed
 }
