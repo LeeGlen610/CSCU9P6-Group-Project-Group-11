@@ -37,14 +37,13 @@ public static void main(String[] args) {
   GOC c1 = new GOC(aircraftManagementDatabase, gateInfoDatabase);
   LATC c2 =new LATC(aircraftManagementDatabase);
   PublicInfo c3 = new PublicInfo(aircraftManagementDatabase);
-  PublicInfo c4 = new PublicInfo(aircraftManagementDatabase);
-  MaintenanceInspector c5 = new MaintenanceInspector(aircraftManagementDatabase);
-  RefuellingSupervisor c6 = new RefuellingSupervisor(aircraftManagementDatabase);
-  CleaningSupervisor c7 = new CleaningSupervisor(aircraftManagementDatabase);
+//  MaintenanceInspector c4 = new MaintenanceInspector(aircraftManagementDatabase);
+//  RefuellingSupervisor c5 = new RefuellingSupervisor(aircraftManagementDatabase);
+//  CleaningSupervisor c6 = new CleaningSupervisor(aircraftManagementDatabase);
   for(int gateNumber = 0; gateNumber < gateInfoDatabase.maxGateNumber; gateNumber++) {
-    GateConsole c8 = new GateConsole(aircraftManagementDatabase, gateInfoDatabase, gateNumber);
+    GateConsole c7 = new GateConsole(aircraftManagementDatabase, gateInfoDatabase, gateNumber);
   }
-  RadarTransceiver c9 = new RadarTransceiver (aircraftManagementDatabase);
+//  RadarTransceiver c8 = new RadarTransceiver (aircraftManagementDatabase);
   }
 
 

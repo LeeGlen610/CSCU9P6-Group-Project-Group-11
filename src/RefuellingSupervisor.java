@@ -27,16 +27,16 @@ public class RefuellingSupervisor extends JFrame
 
   private AircraftManagementDatabase aircraftManagementDatabase;
 /**
- * The Refuelling Supervisor Screen interface has access to the AircraftManagementDatabase.
- * @supplierCardinality 1
- * @clientCardinality 1
- * @label accesses/observes
- * @directed*/
+  * The Refuelling Supervisor Screen interface has access to the AircraftManagementDatabase.
+  * @supplierCardinality 1
+  * @clientCardinality 1
+  * @label accesses/observes
+  * @directed*/
 
 
   /**
    * await refuelling button
-   */
+  */
   private JButton awaitRefuelling;
   /**
    * new text fields for flight codes and status
