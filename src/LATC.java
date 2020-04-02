@@ -48,6 +48,10 @@ public class LATC extends JFrame implements Observer, ActionListener {
     private int managementRecordIndex;
     private boolean buttonAvailability;
 
+    /**
+     *
+     * @param aircraftManagementDatabase
+     */
     public LATC(AircraftManagementDatabase aircraftManagementDatabase) {
         this.aircraftManagementDatabase = aircraftManagementDatabase;
 
@@ -113,6 +117,9 @@ public class LATC extends JFrame implements Observer, ActionListener {
         aircraftManagementDatabase.addObserver(this);
     }
 
+    /**
+     *
+     */
     private void updateRecords() {
         for (int i = 0; i < aircraftManagementDatabase.maxMRs; i++) {
             ManagementRecord managementRecord = aircraftManagementDatabase.getMR(i);
@@ -129,6 +136,9 @@ public class LATC extends JFrame implements Observer, ActionListener {
         }
     }
 
+    /**
+     *
+     */
     private void itemSelected() {
         if (!aircrafts.getValueIsAdjusting()) {
             if (aircrafts.getSelectedValue() == null) {
@@ -151,6 +161,9 @@ public class LATC extends JFrame implements Observer, ActionListener {
         }
     }
 
+    /**
+     *
+     */
     private void updateButtons() {
       if (!buttonAvailability){
           landingGranted.setEnabled(false);
@@ -185,12 +198,21 @@ public class LATC extends JFrame implements Observer, ActionListener {
       }
     }
 
+    /**
+     *
+     * @param observable
+     * @param o
+     */
     @Override
     public void update(Observable observable, Object o) {
        updateRecords();
        itemSelected();
     }
 
+    /**
+     *
+     * @param e
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == landingGranted){
