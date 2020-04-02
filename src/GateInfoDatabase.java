@@ -57,16 +57,6 @@ public class GateInfoDatabase extends Observable {
     }//END METHOD getStatus
 
     /**
-     * Returns the specified gate.
-     *
-     * @param gateNumber The Gate Being Returned.
-     * @return The Gate Based of The Passed-In Number.
-     */
-    public Gate getGate(int gateNumber) {
-        return gates[gateNumber];
-    }//END METHOD getGate
-
-    /**
      * Returns an array containing the status of all gates.
      * For data collection by the GOC.
      *
