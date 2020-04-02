@@ -91,8 +91,7 @@ public class RadarTransceiver extends JFrame implements ActionListener, Observer
 		labelForFlightCodes = new JLabel("FlightCode: ");
 		window.add(labelForFlightCodes);
 		fieldForFlightCodes = new JTextField("", 25);
-		window.add(labelForFlightCodes);
-		window.add(labelForFlightCodes);
+		window.add(fieldForFlightCodes);
 
 		itinearyLabel = new JLabel("Itineary: ");
 		window.add(itinearyLabel);
@@ -244,13 +243,14 @@ public class RadarTransceiver extends JFrame implements ActionListener, Observer
 		} // end if
 
 		if (e.getSource() == buttonLeavesAirspace) {
-			if ((aircraftManagementDatabase.getStatus(managementRecordIndex) == 1)
-					|| (aircraftManagementDatabase.getStatus(managementRecordIndex) == 18))
+			if ((aircraftManagementDatabase.getStatus(managementRecordIndex).equalsIgnoreCase("FREE"))
+					|| (aircraftManagementDatabase.getStatus(managementRecordIndex).equalsIgnoreCase("DEPARTING_THROUGH_LOCAL_AIRSPACE"))) {
 				aircraftManagementDatabase.radarLostContact(managementRecordIndex);
-			else
+			} else {
 				errorMessage("Aircraft has status " + aircraftManagementDatabase.getStatus(managementRecordIndex)
 						+ ". Must have a status of 1 or 18 to leave airspace");
-		} // end if
-		updatePlaneRecords();
-	}// end action performed
+			} // end if/else
+			updatePlaneRecords();
+		}//end if
+	} // end action performed
 }// end class
