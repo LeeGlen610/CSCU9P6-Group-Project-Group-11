@@ -194,15 +194,24 @@ public class RadarTransceiver extends JFrame implements ActionListener, Observer
 
 	/**
 	 * Used to update the JFrame and JList depending on the changes.
-     *
-     * @param observable {@inheritDoc}
-     * @param o          {@inheritDoc}
-     */
+	 *
+	 * @param o
+	 *            {@inheritDoc}
+	 * @param arg
+	 *            {@inheritDoc}
+	 */
 	public void update(Observable o, Object arg) {
 		updateRecords();
 		itemSelected();
 	}// end method update
 
+	/**
+	 * Checks to see what button has been clicked, it will do the corresponding
+	 * action.
+	 *
+	 * @param e
+	 *            {@inheritDoc}
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		itemSelected();
